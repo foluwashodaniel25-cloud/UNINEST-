@@ -1,0 +1,305 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    background: #f8fafc;
+    color: #0f172a;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.header{
+    color: white;
+    width: 100%;
+    min-height: 320px;
+    margin: 0;
+    padding: 24px;
+    border-radius: 0;
+    background: #0f172a;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 16px;
+}
+
+.header h2,
+.header h3,
+.header h1,
+.header p,
+.header form{
+    grid-column: 1 / -1;
+}
+
+.header h2{
+    grid-column: 1;
+    margin: 0;
+}
+
+.nav-links{
+    display:flex;
+    grid-column: 2;
+    justify-content: flex-end;
+    gap:20px;
+}
+
+.nav-links a{
+    color: white;
+    text-decoration: none;
+}
+.verification{
+    display: flex;
+    gap: 70px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+}
+
+.parent{
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+.available-listings{
+    background: white;
+    color: #0f172a;
+    width: 250px;
+    height: 200px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.dashboard-page{
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.sidebar{
+    background: #0f172a;
+    color: white;
+    min-height: 100vh;
+    padding: 28px 20px;
+    position: sticky;
+    top: 0;
+}
+
+.sidebar h2{
+    margin: 0 0 34px;
+    font-size: 26px;
+    letter-spacing: 0;
+}
+
+.sidebar ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar li{
+    border-radius: 8px;
+    color: #cbd5e1;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 13px 14px;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar li:hover,
+.sidebar li.active{
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    transform: translateX(4px);
+}
+
+.sidebar a{
+    color: inherit;
+    display: block;
+    text-decoration: none;
+}
+
+.content{
+    padding: 36px;
+}
+
+.main-content h1,
+.content > h2{
+    margin-top: 0;
+}
+
+.subscription,
+.card,
+.agents,
+.content section,
+.house-1,
+.house-2,
+.house-3{
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+}
+
+.subscription{
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 20px 0;
+    padding: 20px;
+}
+
+.subscription h4{
+    margin: 0;
+}
+
+button{
+    background: #0f172a;
+    border: 0;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 12px 16px;
+}
+
+.cards,
+.card-2,
+.available-rentals{
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.card,
+.agents{
+    padding: 22px;
+}
+
+.card h1,
+.agents h1{
+    margin: 0;
+}
+
+.content section{
+    margin-top: 24px;
+    padding: 24px;
+}
+
+.available-rentals{
+    margin-top: 16px;
+}
+
+.house-1,
+.house-2,
+.house-3{
+    padding: 18px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 600px){
+    .header{
+        grid-template-columns: 1fr;
+    }
+
+    .nav-links{
+        grid-column: 1;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .dashboard-page{
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar{
+        min-height: auto;
+        position: static;
+    }
+
+    .sidebar ul{
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .content{
+        padding: 24px;
+    }
+
+    .subscription{
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .cards,
+    .card-2,
+    .available-rentals{
+        grid-template-columns: 1fr;
+    }
+}
