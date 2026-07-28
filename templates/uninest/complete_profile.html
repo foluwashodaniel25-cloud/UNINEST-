@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Complete Profile{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card shadow">
+        <div class="card-body p-4">
+          <h2 class="mb-1">Complete your {{ role|title }} profile</h2>
+          <p class="text-muted mb-4">A few more details so we can verify and serve you better.</p>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+              {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+            </div>
+            {% endfor %}
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

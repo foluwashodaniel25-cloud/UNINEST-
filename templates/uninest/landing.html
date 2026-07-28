@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center gy-4">
+      <div class="col-lg-7 text-center text-lg-start">
+        <span class="hero-badge mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.49 1.048.625.28.121.421.23.45.282.10.0.2.2.10.0.0.3.172.16.0.2.028-.001.17-.055.45-.282.304-.135.662-.352 1.048-.625a11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0"/>
+          </svg>
+          Verified student housing
+        </span>
+        <h1 class="hero-title mb-3">
+          Find safe housing<br class="d-none d-md-block"> near your school
+        </h1>
+        <p class="hero-lead mb-4">
+          Browse verified, media-rich listings from landlords and agents.
+          Unlock full addresses and contacts for just ₦1,000/month.
+        </p>
+        <div class="d-flex gap-3 justify-content-center justify-content-lg-start flex-wrap">
+          <a href="{% url 'register' %}" class="btn btn-hero-primary btn-lg px-4">Create Account</a>
+          <a href="{% url 'search' %}" class="btn btn-hero-secondary btn-lg px-4">View Listings</a>
+        </div>
+        <div class="hero-stats mt-4 d-flex gap-4 justify-content-center justify-content-lg-start flex-wrap">
+          <div>
+            <div class="stat-value">Verified</div>
+            <div class="stat-label">NIN &amp; ownership checks</div>
+          </div>
+          <div class="stat-divider d-none d-sm-block"></div>
+          <div>
+            <div class="stat-value">₦1,000</div>
+            <div class="stat-label">Monthly platform access</div>
+          </div>
+          <div class="stat-divider d-none d-sm-block"></div>
+          <div>
+            <div class="stat-value">Schools</div>
+            <div class="stat-label">Listings near campus</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block">
+        <div class="hero-card">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="hero-card-icon" viewBox="0 0 16 16">
+            <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354z"/>
+          </svg>
+          <h3 class="mb-2">Search → Browse → Unlock</h3>
+          <p class="mb-0 opacity-75">
+            See photos and area first. Pay once to unlock every full address and contact on the platform.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trust-strip">
+  <div class="container">
+    <div class="row text-center g-3">
+      <div class="col-6 col-md-3">
+        <div class="trust-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm0 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm6.5-5.5A1.5 1.5 0 1 0 11 7a1.5 1.5 0 0 0-2.5-1.5"/>
+          </svg>
+        </div>
+        <div class="trust-text">Student ID / NIN</div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="trust-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+            <path d="M8.5 7.5a.5.5 0 0 0-1 0V9H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V10H10a.5.5 0 0 0 0-1H8.5z"/>
+          </svg>
+        </div>
+        <div class="trust-text">Proof of ownership</div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="trust-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+          </svg>
+        </div>
+        <div class="trust-text">Verified agents</div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="trust-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+          </svg>
+        </div>
+        <div class="trust-text">Details behind paywall</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-block">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <h2 class="section-title">How UNINEST works</h2>
+      <p class="section-subtitle">Four simple steps from search to move-in</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card h-100">
+          <div class="step-num">1</div>
+          <h5 class="step-title">Search</h5>
+          <p class="step-desc">Enter your school and the area you prefer to live in.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card h-100">
+          <div class="step-num">2</div>
+          <h5 class="step-title">Browse</h5>
+          <p class="step-desc">View photos, videos, and general location — no account needed.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card h-100">
+          <div class="step-num">3</div>
+          <h5 class="step-title">Unlock</h5>
+          <p class="step-desc">Subscribe for ₦1,000/month to reveal full address and contacts.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card h-100">
+          <div class="step-num">4</div>
+          <h5 class="step-title">Connect</h5>
+          <p class="step-desc">Call the landlord or agent directly and arrange your viewing.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-block section-alt">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <h2 class="section-title">Built for trust</h2>
+      <p class="section-subtitle">Why students and landlords choose UNINEST</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.49 1.048.625.28.121.421.23.45.282.10.0.2.2.10.0.0.3.172.16.0.2.028-.001.17-.055.45-.282.304-.135.662-.352 1.048-.625a11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0m0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.49.595h-.79a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5"/>
+            </svg>
+          </div>
+          <h5 class="feature-title">Identity verification</h5>
+          <p class="feature-desc">
+            Students, agents, and landlords submit NIN, student ID, or proof of ownership before full access.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2z"/>
+            </svg>
+          </div>
+          <h5 class="feature-title">Media-rich listings</h5>
+          <p class="feature-desc">
+            Photos and videos on every listing so you know what you’re getting before you visit.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9A1.5 1.5 0 0 1 1.5 3H2V1.78a1.5 1.5 0 0 1 1.864-1.455L8 3.208zM2 5.5v8h12v-8z"/>
+            </svg>
+          </div>
+          <h5 class="feature-title">One low monthly fee</h5>
+          <p class="feature-desc">
+            ₦1,000 unlocks every listing platform-wide — not a fee per house.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container text-center">
+    <h2 class="cta-title mb-3">Ready to find your next place?</h2>
+    <p class="cta-subtitle mb-4">
+      Create a free account, browse verified listings, and unlock details when you’re ready.
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{% url 'register' %}" class="btn btn-light btn-lg px-4 fw-semibold">Get started</a>
+      <a href="{% url 'search' %}" class="btn btn-outline-light btn-lg px-4 fw-semibold border-2">Browse listings</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

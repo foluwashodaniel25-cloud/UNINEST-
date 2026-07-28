@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h2>Student Dashboard</h2>
+    <div>
+      {% if has_sub %}
+      <span class="badge bg-success fs-6">
+        <i class="bi bi-unlock-fill"></i>
+        Subscription active until {{ user.subscription_end|date:"M d, Y" }}
+      </span>
+      {% else %}
+      <a href="{% url 'subscribe' %}" class="btn btn-warning">
+        <i class="bi bi-credit-card"></i> Unlock details – ₦1,000/mo
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm text-center p-3">
+        {% if user.profile_photo %}
+        <img src="{{ user.profile_photo.url }}" class="rounded-circle mx-auto mb-2"
+             width="80" height="80" style="object-fit:cover">
+        {% else %}
+        <i class="bi bi-person-circle display-3 text-secondary"></i>
+        {% endif %}
+        <h5>{{ user.get_full_name }}</h5>
+        <form method="post" action="{% url 'update_profile_photo' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="file" name="profile_photo" class="form-control form-control-sm mb-1" accept="image/*">
+          <button class="btn btn-sm btn-outline-primary">Update photo</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white"><strong>Saved Listings</strong></div>
+        <div class="card-body">
+          {% if saved %}
+          <div class="list-group list-group-flush">
+            {% for s in saved %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+              <a href="{% url 'listing_detail' s.listing.pk %}">
+                {{ s.listing.general_location }} – ₦{{ s.listing.rent_amount|floatformat:0 }}
+              </a>
+              <a href="{% url 'unsave_listing' s.listing.pk %}" class="btn btn-sm btn-outline-danger">Remove</a>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p class="text-muted mb-0">No saved listings yet. <a href="{% url 'search' %}">Browse listings</a></p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="card shadow-sm">
+        <div class="card-header bg-white"><strong>Payment History</strong></div>
+        <div class="card-body">
+          {% if payments %}
+          <table class="table table-sm mb-0">
+            <thead><tr><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for p in payments %}
+              <tr>
+                <td>{{ p.created_at|date:"M d, Y" }}</td>
+                <td>₦{{ p.amount|floatformat:0 }}</td>
+                <td>
+                  <span class="badge bg-{% if p.status == 'succeeded' %}success{% else %}secondary{% endif %}">
+                    {{ p.status }}
+                  </span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p class="text-muted mb-0">No payments yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

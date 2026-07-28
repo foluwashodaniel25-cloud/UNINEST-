@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Student Agent Dashboard{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h2>
+    Student Agent Dashboard
+    <span class="badge bg-success">School Verified</span>
+  </h2>
+  <p class="text-muted">
+    Department: {{ profile.department }} · Course rep: {{ profile.course_rep_name }}
+  </p>
+  <div class="alert alert-info">
+    Student Agent features can be expanded here.
+    Contact the product team for the full feature set once verified.
+  </div>
+</div>
+{% endblock %}

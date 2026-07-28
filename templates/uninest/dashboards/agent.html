@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Agent Dashboard{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h2>
+      Agent Dashboard
+      {% if is_verified %}
+      <span class="badge bg-primary"><i class="bi bi-patch-check-fill"></i> Verified</span>
+      {% endif %}
+    </h2>
+    <div class="d-flex gap-2">
+      {% if not is_verified and not verification_pending %}
+      <a href="{% url 'agent_verify' %}" class="btn btn-outline-primary">Get Verified</a>
+      {% elif verification_pending %}
+      <span class="badge bg-warning text-dark align-self-center">Verification pending</span>
+      {% endif %}
+      <a href="{% url 'create_listing' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> New Advert
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm text-center p-3">
+        {% if user.profile_photo %}
+        <img src="{{ user.profile_photo.url }}" class="rounded-circle mx-auto mb-2"
+             width="80" height="80" style="object-fit:cover">
+        {% else %}
+        <i class="bi bi-person-circle display-3 text-secondary"></i>
+        {% endif %}
+        <h5>{{ user.get_full_name }}</h5>
+        <form method="post" action="{% url 'update_profile_photo' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="file" name="profile_photo" class="form-control form-control-sm mb-1" accept="image/*">
+          <button class="btn btn-sm btn-outline-primary">Update photo</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white"><strong>My Adverts ({{ listings|length }})</strong></div>
+        <div class="card-body p-0">
+          {% if listings %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead><tr><th>Location</th><th>Rent</th><th>Status</th><th>Created</th></tr></thead>
+              <tbody>
+                {% for l in listings %}
+                <tr>
+                  <td>
+                    {{ l.general_location }}
+                    {% if l.is_verified_agent %}
+                    <i class="bi bi-patch-check-fill text-primary"></i>
+                    {% endif %}
+                  </td>
+                  <td>₦{{ l.rent_amount|floatformat:0 }}</td>
+                  <td>
+                    <span class="badge bg-{% if l.status == 'live' %}success{% elif l.status == 'pending' %}warning text-dark{% else %}secondary{% endif %}">
+                      {{ l.status }}
+                    </span>
+                  </td>
+                  <td>{{ l.created_at|date:"M d" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted p-3 mb-0">
+            No adverts yet. <a href="{% url 'create_listing' %}">Upload your first listing</a>
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
