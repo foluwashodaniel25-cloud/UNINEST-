@@ -1,0 +1,68 @@
+<!--
+  Payment History / Receipts section.
+  Drop this into your existing templates/uninest/dashboards/student.html,
+  wherever makes sense in the layout (e.g. below saved listings).
+  Uses the `payments` context variable already passed by student_dashboard()
+  in views.py -- no view changes needed on top of what's already there.
+-->
+
+<div class="card border-0 shadow-sm rounded-4 mt-4">
+  <div class="card-body p-4">
+    <h5 class="fw-bold mb-3"><i class="bi bi-receipt text-primary"></i> Payment History</h5>
+
+    {% if payments %}
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr class="text-secondary small text-uppercase">
+            <th>Date</th>
+            <th>For</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th class="text-end">Receipt</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for payment in payments %}
+          <tr>
+            <td class="small">{{ payment.created_at|date:"d M Y" }}</td>
+            <td class="small">
+              {{ payment.get_payment_type_display }}
+              {% if payment.payment_type == "rent" and payment.listing %}
+              <div class="text-secondary">{{ payment.listing.general_location }}</div>
+              {% endif %}
+            </td>
+            <td class="fw-semibold small">₦{{ payment.amount|floatformat:0 }}</td>
+            <td>
+              {% if payment.status == "succeeded" %}
+              <span class="badge bg-success-subtle text-success">Paid</span>
+              {% elif payment.status == "pending" %}
+              <span class="badge bg-warning-subtle text-warning">Pending</span>
+              {% elif payment.status == "failed" %}
+              <span class="badge bg-danger-subtle text-danger">Failed</span>
+              {% else %}
+              <span class="badge bg-secondary-subtle text-secondary">{{ payment.get_status_display }}</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              {% if payment.status == "succeeded" %}
+              <a href="{% url 'download_receipt' payment.pk %}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-download"></i> Download
+              </a>
+              {% else %}
+              <span class="text-secondary small">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center text-secondary py-4">
+      <i class="bi bi-receipt fs-1 d-block mb-2"></i>
+      No payments yet. Receipts will show up here after your first payment.
+    </div>
+    {% endif %}
+  </div>
+</div>

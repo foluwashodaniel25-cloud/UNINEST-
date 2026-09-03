@@ -99,7 +99,24 @@ CSRF_TRUSTED_ORIGINS = [
     "https://127.0.0.1:8000",
 ]
 
-# If Codespaces gives you a public URL like:
-# https://something-8000.app.github.dev
-# add that too, e.g.:
-# "https://*.app.github.dev",
+ 
+import os
+ 
+PAYSTACK_PUBLIC_KEY = os.environ.get("PAYSTACK_PUBLIC_KEY", "pk_test_f421374648bb4438d40d6e5465d9acb658ab7d9f")
+PAYSTACK_SECRET_KEY = os.environ.get("PAYSTACK_SECRET_KEY", "sk_test_e7d36757f2c8e7fb8e5c8ca1bd7b89bc97b0dcd2")
+ 
+# Amount charged for the monthly unlock, in Naira (converted to kobo where needed)
+UNINEST_SUBSCRIPTION_AMOUNT = 1000
+import os
+ 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "kiritukagunya@gmail.com")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")  # 16-char App Password
+DEFAULT_FROM_EMAIL = f"UNINEST <{EMAIL_HOST_USER}>"
+ 
+# How long a verification code stays valid
+EMAIL_VERIFICATION_CODE_TTL_MINUTES = 15
+ 

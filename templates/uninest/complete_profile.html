@@ -11,14 +11,31 @@
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for field in form %}
+
+            {% if field.name == "nin_doc" %}
+            <div class="d-flex align-items-center my-3">
+              <hr class="flex-grow-1">
+              <span class="px-3 text-muted small fw-semibold">OR</span>
+              <hr class="flex-grow-1">
+            </div>
+            <p class="text-muted small mb-2">You only need to upload one of these — whichever you have.</p>
+            {% endif %}
+
             <div class="mb-3">
+
               <label class="form-label">{{ field.label }}</label>
               {{ field }}
               {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
-              {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+              {% if field.errors %}<div class="text-danger small">{{ field.errors }}
+
+              </div>{% endif %}
+
             </div>
+
             {% endfor %}
+
             {% if form.non_field_errors %}
+
             <div class="alert alert-danger">{{ form.non_field_errors }}</div>
             {% endif %}
             <button type="submit" class="btn btn-primary w-100">Submit</button>

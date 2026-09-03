@@ -1,14 +1,21 @@
 from django.contrib import admin
-
-# Register your models here.
-from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils import timezone
 from .models import (
     User, StudentProfile, AgentProfile, LandlordProfile,
     StudentAgentProfile, Listing, ListingMedia, SavedListing,
-    Payment, VerificationRequest,
+    Payment, VerificationRequest, EmailVerificationCode,
 )
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ("paystack_reference", "user", "amount", "status", "created_at")
+    list_filter = ("status", "payment_type")
+    search_fields = (
+        "paystack_reference", "user__username", "user__email",
+        "stripe_session_id",
+    )
 
 
 @admin.register(User)
@@ -41,9 +48,9 @@ class ListingMediaInline(admin.TabularInline):
 class ListingAdmin(admin.ModelAdmin):
     list_display = (
         "general_location", "owner", "rent_amount",
-        "status", "is_verified_agent", "created_at",
+        "status", "is_verified_agent", "is_featured", "created_at",
     )
-    list_filter = ("status", "rent_basis", "is_verified_agent")
+    list_filter = ("status", "rent_basis", "is_verified_agent", "is_featured")
     search_fields = (
         "general_location", "school_name",
         "full_address", "landlord_name",
@@ -99,4 +106,10 @@ admin.site.register(LandlordProfile)
 admin.site.register(StudentAgentProfile)
 admin.site.register(ListingMedia)
 admin.site.register(SavedListing)
-admin.site.register(Payment)
+
+
+@admin.register(EmailVerificationCode)
+class EmailVerificationCodeAdmin(admin.ModelAdmin):
+    list_display = ("user", "code", "used", "created_at")
+    list_filter = ("used",)
+    search_fields = ("user__username", "user__email", "code")

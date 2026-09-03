@@ -1,66 +1,151 @@
 {% extends "base.html" %}
-{% block title %}Search Listings{% endblock %}
+{% load static %}
+{% block title %}Search Listings – UNINEST{% endblock %}
+
+{% block extra_head %}
+<style>
+  .sr-search-card {
+    background: linear-gradient(160deg, rgba(13,148,136,.08), rgba(13,148,136,.02));
+    border: 1px solid rgba(13,148,136,.15);
+  }
+  .sr-listing-card {
+    transition: transform .18s ease, box-shadow .18s ease;
+    overflow: hidden;
+  }
+  .sr-listing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 36px rgba(0,0,0,.09);
+  }
+  .sr-listing-img, .listing-img-placeholder {
+    height: 200px;
+    object-fit: cover;
+  }
+  .sr-fact-pill {
+    font-size: .78rem;
+    padding: .25rem .6rem;
+    border-radius: 2rem;
+    background: var(--bs-tertiary-bg, #f1f3f5);
+    color: var(--bs-secondary-color, #6c757d);
+  }
+  .sr-empty-icon {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: rgba(13,148,136,.08);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container py-4">
-  <h2 class="mb-4">Find Housing Near Your School</h2>
-  <form method="get" class="row g-3 mb-4 card card-body shadow-sm">
-    <div class="col-md-5">
-      <label class="form-label">School name</label>
-      {{ form.school_name }}
-    </div>
-    <div class="col-md-5">
-      <label class="form-label">Location / area</label>
-      {{ form.location }}
-    </div>
-    <div class="col-md-2 d-flex align-items-end">
-      <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
+
+  <div class="mb-4">
+    <h2 class="fw-bold mb-1">Find Housing Near Your School</h2>
+    <p class="text-secondary mb-0">Search verified listings by campus or neighborhood.</p>
+  </div>
+
+  <!-- Search card -->
+  <form method="get" class="sr-search-card rounded-4 shadow-sm p-4 mb-5">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label small fw-semibold text-secondary">
+          <i class="bi bi-mortarboard-fill text-primary"></i> School name
+        </label>
+        <select name="school_name" class="form-select">
+          <option value="">Any School</option>
+          {% for school in available_schools %}
+          <option value="{{ school }}" {% if request.GET.school_name == school %}selected{% endif %}>{{ school }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-5">
+        <label class="form-label small fw-semibold text-secondary">
+          <i class="bi bi-geo-alt-fill text-primary"></i> Location / area
+        </label>
+        {{ form.location }}
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100 py-2">
+          <i class="bi bi-search"></i> Search
+        </button>
+      </div>
     </div>
   </form>
 
   {% if listings %}
-  <p class="text-muted">{{ listings|length }} listing{{ listings|length|pluralize }} found</p>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="text-secondary mb-0">
+      <strong class="text-dark">{{ listings|length }}</strong> listing{{ listings|length|pluralize }} found
+    </p>
+  </div>
+
   <div class="row g-4">
     {% for listing in listings %}
-    <div class="col-md-4">
-      <div class="card listing-card h-100 shadow-sm">
-        {% if listing.primary_image %}
-        <img src="{{ listing.primary_image }}" class="card-img-top listing-img" alt="House">
-        {% else %}
-        <div class="listing-img-placeholder d-flex align-items-center justify-content-center bg-secondary text-white">
-          <i class="bi bi-house display-4"></i>
+    <div class="col-md-6 col-lg-4">
+      <div class="card sr-listing-card border-0 shadow-sm h-100 rounded-4">
+
+        <div class="position-relative">
+          {% if listing.primary_image %}
+          <img src="{{ listing.primary_image }}" class="card-img-top sr-listing-img" alt="{{ listing.general_location }}">
+          {% else %}
+          <div class="listing-img-placeholder d-flex align-items-center justify-content-center bg-secondary text-white">
+            <i class="bi bi-house display-4"></i>
+          </div>
+          {% endif %}
+          {% if listing.is_verified_agent %}
+          <span class="badge bg-primary position-absolute top-0 start-0 m-2 py-2 px-3 rounded-pill shadow-sm">
+            <i class="bi bi-patch-check-fill"></i> Verified
+          </span>
+          {% endif %}
         </div>
-        {% endif %}
-        <div class="card-body">
-          <h5 class="card-title">
-            {{ listing.general_location }}
-            {% if listing.is_verified_agent %}
-            <i class="bi bi-patch-check-fill text-primary" title="Verified agent"></i>
-            {% endif %}
-          </h5>
-          <p class="card-text text-muted small mb-1">
-            <i class="bi bi-geo-alt"></i> {{ listing.school_name|default:"Near campus" }}
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title fw-bold mb-1">{{ listing.general_location }}</h5>
+          <p class="card-text text-secondary small mb-2">
+            <i class="bi bi-mortarboard"></i> {{ listing.school_name|default:"Near campus" }}
           </p>
-          <p class="fw-bold text-primary mb-2">
-            ₦{{ listing.rent_amount|floatformat:0 }} / {{ listing.get_rent_basis_display }}
+
+          <p class="fw-bold text-primary fs-5 mb-2">
+            ₦{{ listing.rent_amount|floatformat:0 }}
+            <span class="fs-6 text-secondary fw-normal">/ {{ listing.get_rent_basis_display }}</span>
           </p>
-          <p class="small text-muted">
-            {{ listing.number_of_rooms }} room{{ listing.number_of_rooms|pluralize }}
-            · max {{ listing.max_tenants }} tenant{{ listing.max_tenants|pluralize }}
-          </p>
-          <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-outline-primary btn-sm w-100">
-            View House Address &amp; Details
+
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="sr-fact-pill">
+              <i class="bi bi-door-open"></i> {{ listing.number_of_rooms }} room{{ listing.number_of_rooms|pluralize }}
+            </span>
+            <span class="sr-fact-pill">
+              <i class="bi bi-people"></i> Max {{ listing.max_tenants }}
+            </span>
+          </div>
+
+          <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-outline-primary w-100 mt-auto">
+            View Address &amp; Details
           </a>
         </div>
       </div>
     </div>
     {% endfor %}
   </div>
+
   {% elif query %}
-  <div class="alert alert-info">No listings found for that school/area. Try a broader search.</div>
+  <div class="text-center py-5">
+    <div class="sr-empty-icon mb-3">
+      <i class="bi bi-emoji-frown fs-2 text-primary"></i>
+    </div>
+    <h5 class="fw-bold">No listings match that search</h5>
+    <p class="text-secondary">Try a broader school name or a nearby area instead.</p>
+  </div>
   {% else %}
-  <div class="text-center text-muted py-5">
-    <i class="bi bi-search display-1"></i>
-    <p class="mt-3">Enter a school and location to browse available houses.</p>
+  <div class="text-center py-5">
+    <div class="sr-empty-icon mb-3">
+      <i class="bi bi-search fs-2 text-primary"></i>
+    </div>
+    <h5 class="fw-bold">Start your search</h5>
+    <p class="text-secondary">Enter a school and location above to browse available houses.</p>
   </div>
   {% endif %}
 </div>

@@ -13,44 +13,213 @@
       document.documentElement.setAttribute("data-bs-theme", t);
     })();
   </script>
+  <style>
+    /* Glassmorphism navbar */
+    .navbar-glass {
+      background: rgba(13, 148, 136, 0.70);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+      padding-top: 0.55rem;
+      padding-bottom: 0.55rem;
+    }
+
+    .navbar-glass.is-scrolled {
+      background: rgba(13, 148, 136, 0.88);
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.14);
+      padding-top: 0.4rem;
+      padding-bottom: 0.4rem;
+    }
+
+    [data-bs-theme="dark"] .navbar-glass {
+      background: rgba(15, 23, 23, 0.65);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    [data-bs-theme="dark"] .navbar-glass.is-scrolled {
+      background: rgba(15, 23, 23, 0.88);
+    }
+
+    /* Brand */
+    .navbar-brand {
+      font-size: 1.35rem;
+      letter-spacing: 0.3px;
+    }
+
+    .navbar-brand img {
+      width: 52px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    /* Nav links */
+    .navbar-glass .nav-link {
+      font-weight: 500;
+      padding: 0.45rem 0.85rem !important;
+      border-radius: 0.4rem;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .navbar-glass .nav-link:hover,
+    .navbar-glass .nav-link:focus {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      color: rgba(255, 255, 255, 0.9) !important;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 !important;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    /* CTA buttons */
+    .navbar-glass .btn-unlock {
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 0.45rem;
+      white-space: nowrap;
+    }
+
+    .navbar-glass .btn-create {
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.35rem 0.95rem;
+      border-radius: 0.45rem;
+      white-space: nowrap;
+    }
+
+    /* Dropdown stays solid */
+    .navbar-glass .dropdown-menu {
+      background: var(--bs-body-bg);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      border-radius: 0.55rem;
+      padding: 0.4rem;
+      min-width: 11rem;
+    }
+
+    .navbar-glass .dropdown-item {
+      border-radius: 0.35rem;
+      padding: 0.45rem 0.85rem;
+      font-weight: 500;
+    }
+
+    .navbar-glass .dropdown-item:hover {
+      background: rgba(13, 148, 136, 0.1);
+    }
+
+    /* Mobile refinements */
+    @media (max-width: 991.98px) {
+      .navbar-glass {
+        padding-top: 0.65rem;
+        padding-bottom: 0.65rem;
+      }
+
+      .navbar-brand {
+        font-size: 1.25rem;
+      }
+
+      .navbar-brand img {
+        width: 46px;
+      }
+
+      .navbar-collapse {
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .navbar-nav .nav-link {
+        padding: 0.6rem 0.75rem !important;
+      }
+
+      .navbar-nav .btn-unlock,
+      .navbar-nav .btn-create {
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        margin: 0.35rem 0 !important;
+      }
+
+      .theme-toggle {
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .navbar-brand {
+        font-size: 1.15rem;
+      }
+
+      .navbar-brand img {
+        width: 40px;
+      }
+    }
+  </style>
   {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <!-- Page loader -->
+  <!-- Page loader: only shown the first time the site is opened in this tab/session -->
   <div id="pageLoader" class="page-loader" aria-hidden="true">
     <div class="loader-inner">
-      <div class="loader-house">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354z"/>
-        </svg>
-      </div>
       <div class="loader-ring"></div>
       <div class="loader-brand">UNINEST</div>
       <div class="loader-sub">Finding your next place…</div>
     </div>
   </div>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+  <script>
+    // Hide instantly (before paint) on internal navigations within the same tab/session.
+    // Only the very first page load of the session gets the animated loader.
+    if (sessionStorage.getItem("uninest-loader-shown")) {
+      document.write('<style>#pageLoader{display:none !important;}</style>');
+    }
+  </script>
+
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-glass sticky-top" id="mainNav">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="{% url 'landing' %}">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="me-1" viewBox="0 0 16 16" style="vertical-align:-3px">
-          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354z"/>
-        </svg>
-        UNINEST
+      <!-- Brand -->
+      <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{% url 'landing' %}">
+        <img src="/media/images/WhatsApp Image 2026-08-18 at 14.43.44.jpeg" alt="UniNest logo" class="rounded">
+        <span>UNINEST</span> 
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+
+      <!-- Mobile toggle -->
+      <button class="navbar-toggler border-0 shadow-none" type="button"
+              data-bs-toggle="collapse" data-bs-target="#nav"
               aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="nav">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link" href="{% url 'search' %}">View Listings</a></li>
+        <!-- Left links -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'search' %}">View Listings</a>
+          </li>
           {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+          </li>
           {% endif %}
         </ul>
+
+        <!-- Right side -->
         <ul class="navbar-nav align-items-lg-center gap-lg-1">
+          <!-- Theme toggle -->
           <li class="nav-item">
-            <button type="button" class="btn btn-link nav-link px-2 theme-toggle" id="themeToggle"
+            <button type="button" class="btn btn-link nav-link theme-toggle" id="themeToggle"
                     aria-label="Toggle dark mode" title="Toggle dark mode">
               <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
@@ -60,28 +229,52 @@
               </svg>
             </button>
           </li>
+
           {% if user.is_authenticated %}
             {% if user.has_active_subscription %}
-            <li class="nav-item"><span class="nav-link text-warning">Unlocked</span></li>
+              <li class="nav-item">
+                <span class="nav-link text-warning fw-semibold">Unlocked</span>
+              </li>
             {% else %}
-            <li class="nav-item">
-              <a class="nav-link btn btn-warning btn-sm text-dark px-3 me-2" href="{% url 'subscribe' %}">Unlock ₦1,000/mo</a>
-            </li>
+              <li class="nav-item">
+                <a class="btn btn-warning btn-unlock text-dark me-lg-2" href="{% url 'subscribe' %}">
+                  Unlock ₦1,000/mo
+                </a>
+              </li>
             {% endif %}
+
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                 role="button" aria-expanded="false">
                 {{ user.get_full_name|default:user.username }}
+                {% if user.is_staff and staff_pending_total %}
+                <span class="badge bg-danger rounded-pill" style="font-size:.65rem;">{{ staff_pending_total }}</span>
+                {% endif %}
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
-                <li><hr class="dropdown-divider"></li>
+                {% if user.is_staff %}
+                <li>
+                  <a class="dropdown-item d-flex justify-content-between align-items-center" href="{% url 'admin_dashboard' %}">
+                    <span><i class="bi bi-speedometer2 text-primary"></i> Staff Dashboard</span>
+                    {% if staff_pending_total %}
+                    <span class="badge bg-danger rounded-pill">{{ staff_pending_total }}</span>
+                    {% endif %}
+                  </a>
+                </li>
+                {% endif %}
+                <li><hr class="dropdown-divider my-1"></li>
                 <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
               </ul>
             </li>
           {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
             <li class="nav-item">
-              <a class="nav-link btn btn-light btn-sm text-primary px-3 ms-2" href="{% url 'register' %}">Create Account</a>
+              <a class="nav-link" href="{% url 'login' %}">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-light btn-create text-primary ms-lg-2" href="{% url 'register' %}">
+                Create Account
+              </a>
             </li>
           {% endif %}
         </ul>
@@ -121,11 +314,18 @@
       var loader = document.getElementById("pageLoader");
       if (!loader) return;
 
+      // Already hidden via the inline <style> injected in <head> for repeat visits this session.
+      if (sessionStorage.getItem("uninest-loader-shown")) {
+        loader.style.display = "none";
+        return;
+      }
+
       function hideLoader() {
         loader.classList.add("is-done");
         setTimeout(function () {
           loader.style.display = "none";
         }, 500);
+        sessionStorage.setItem("uninest-loader-shown", "1");
       }
 
       if (document.readyState === "complete") {
@@ -139,6 +339,7 @@
       // Safety: never block more than 3s
       setTimeout(hideLoader, 3000);
     })();
+
     (function () {
       var btn = document.getElementById("themeToggle");
       var moon = document.getElementById("themeIconMoon");
@@ -163,6 +364,20 @@
         localStorage.setItem("uninest-theme", next);
         applyIcon(next);
       });
+    })();
+
+    (function () {
+      var nav = document.getElementById("mainNav");
+      if (!nav) return;
+      function updateNav() {
+        if (window.scrollY > 40) {
+          nav.classList.add("is-scrolled");
+        } else {
+          nav.classList.remove("is-scrolled");
+        }
+      }
+      updateNav();
+      window.addEventListener("scroll", updateNav, { passive: true });
     })();
   </script>
   {% block extra_js %}{% endblock %}

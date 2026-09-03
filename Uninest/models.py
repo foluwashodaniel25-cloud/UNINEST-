@@ -1,3 +1,6 @@
+import random
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
@@ -16,6 +19,9 @@ class User(AbstractUser):
     profile_photo = models.ImageField(upload_to="profiles/", blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     verification_pending = models.BooleanField(default=False)
+
+    # Email confirmation (separate from is_verified, which is KYC/agent verification)
+    email_verified = models.BooleanField(default=False)
 
     # Stripe
     stripe_customer_id = models.CharField(max_length=100, blank=True)
@@ -103,6 +109,10 @@ class Listing(models.Model):
 
     status = models.CharField(max_length=20, choices=STATUS, default="pending")
     is_verified_agent = models.BooleanField(default=False)
+    is_featured = models.BooleanField(
+        default=False,
+        help_text="Staff-curated: shows in Featured Listings on the landing page.",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -147,6 +157,7 @@ class SavedListing(models.Model):
 class Payment(models.Model):
     PAYMENT_TYPES = [
         ("subscription", "Subscription"),
+        ("rent", "Rent Payment"),
         ("other", "Other"),
     ]
     STATUS = [
@@ -156,12 +167,21 @@ class Payment(models.Model):
         ("refunded", "Refunded"),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="payments")
+    listing = models.ForeignKey(
+        Listing, on_delete=models.SET_NULL, null=True, blank=True, related_name="rent_payments"
+    )
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     currency = models.CharField(max_length=10, default="ngn")
     payment_type = models.CharField(max_length=20, choices=PAYMENT_TYPES, default="subscription")
     status = models.CharField(max_length=20, choices=STATUS, default="pending")
+
+    # Stripe (legacy / other payment path)
     stripe_session_id = models.CharField(max_length=200, blank=True)
     stripe_payment_intent = models.CharField(max_length=200, blank=True)
+
+    # Paystack (Nigeria)
+    paystack_reference = models.CharField(max_length=64, unique=True, null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -189,3 +209,26 @@ class VerificationRequest(models.Model):
 
     def __str__(self):
         return f"{self.request_type} – {self.user} ({self.status})"
+
+
+class EmailVerificationCode(models.Model):
+    """
+    A one-time 6-digit code emailed to the user right after registration.
+    A new row is created each time a code is (re)sent; only the newest
+    unused, unexpired one is valid.
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="email_codes")
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    used = models.BooleanField(default=False)
+
+    def is_expired(self):
+        return timezone.now() > self.created_at + timedelta(minutes=15)
+
+    def __str__(self):
+        return f"{self.user} – {self.code} ({'used' if self.used else 'active'})"
+
+    @staticmethod
+    def generate_for(user):
+        code = f"{random.randint(0, 999999):06d}"
+        return EmailVerificationCode.objects.create(user=user, code=code)

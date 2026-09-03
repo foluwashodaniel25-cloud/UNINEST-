@@ -1,17 +1,346 @@
 {% extends "base.html" %}
 {% block title %}Student Agent Dashboard{% endblock %}
+
+{% block extra_head %}
+<style>
+  .dashboard-header {
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .profile-card {
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .profile-photo-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 1rem;
+  }
+
+  .profile-photo-wrapper img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 14px rgba(0,0,0,.12);
+  }
+
+  .profile-photo-wrapper .photo-placeholder {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #ced4da;
+  }
+
+  .photo-add-btn {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--bs-primary);
+    color: #fff;
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.18);
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+
+  .photo-add-btn:hover {
+    transform: scale(1.08);
+    background: #0d7a72;
+  }
+
+  .photo-add-btn input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .info-card {
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .info-card .card-header {
+    background: #fff;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+  }
+
+  .info-row:last-child {
+    border-bottom: none;
+  }
+
+  .info-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+
+  .info-value {
+    font-weight: 600;
+  }
+
+  .feature-box {
+    border: none;
+    border-radius: 0.9rem;
+    padding: 1.35rem;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .feature-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0,0,0,.08);
+  }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 0.85rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .dashboard-header h2 {
+      font-size: 1.4rem;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container py-4">
-  <h2>
-    Student Agent Dashboard
-    <span class="badge bg-success">School Verified</span>
-  </h2>
-  <p class="text-muted">
-    Department: {{ profile.department }} · Course rep: {{ profile.course_rep_name }}
-  </p>
-  <div class="alert alert-info">
-    Student Agent features can be expanded here.
-    Contact the product team for the full feature set once verified.
+<div class="container py-4 py-md-5">
+
+  <!-- Header -->
+  <div class="dashboard-header d-flex justify-content-between align-items-start flex-wrap gap-3">
+    <div>
+      <h2 class="fw-bold mb-1">
+        Student Agent Dashboard
+        {% if verified %}
+        <span class="badge bg-success ms-1 align-middle" style="font-size:0.7rem;">
+          <i class="bi bi-patch-check-fill me-1"></i>School Verified
+        </span>
+        {% else %}
+        <span class="badge bg-danger ms-1 align-middle" style="font-size:0.7rem;">
+          <i class="bi bi-exclamation-triangle-fill me-1"></i>Pending Verification
+        </span>
+        {% endif %}
+      </h2>
+      <p class="text-secondary mb-0 small">
+        Department: {{ profile.department }} · Course rep: {{ profile.course_rep_name }}
+      </p>
+    </div>
+  </div>
+
+  {% if not verified %}
+  <div class="alert alert-danger d-flex align-items-start gap-2 mb-4">
+    <i class="bi bi-exclamation-triangle-fill fs-5 mt-1"></i>
+    <div>
+      <strong>Your account is pending school verification.</strong>
+      You can still browse and list rooms below, but your listings will need
+      extra review before going live, and some features stay limited until
+      your school verifies your status.
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="row g-4">
+
+    <!-- Left: Profile -->
+    <div class="col-lg-3">
+      <div class="card shadow-sm profile-card mb-4">
+        <div class="card-body text-center p-4">
+
+          <form method="post" action="{% url 'update_profile_photo' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="profile-photo-wrapper">
+              {% if user.profile_photo %}
+                <img src="{{ user.profile_photo.url }}" alt="Profile photo">
+              {% else %}
+                <div class="photo-placeholder">
+                  <i class="bi bi-person text-secondary" style="font-size:2.8rem;"></i>
+                </div>
+              {% endif %}
+
+              <!-- + button -->
+              <label class="photo-add-btn" title="Add / change photo">
+                <span>+</span>
+                <input type="file" name="profile_photo" accept="image/*" onchange="this.form.submit()">
+              </label>
+            </div>
+          </form>
+
+          <h5 class="fw-bold mb-0">{{ user.get_full_name|default:user.username }}</h5>
+          <p class="text-secondary small mb-0">Student Agent</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right content -->
+    <div class="col-lg-9">
+
+      <!-- Verification info -->
+      <div class="card shadow-sm info-card mb-4">
+        <div class="card-header">
+          Verification Details
+        </div>
+        <div class="card-body p-0">
+          <div class="info-row">
+            <span class="info-label">Status</span>
+            {% if verified %}
+            <span class="badge bg-success-subtle text-success">School Verified</span>
+            {% else %}
+            <span class="badge bg-danger-subtle text-danger">Pending Verification</span>
+            {% endif %}
+          </div>
+          <div class="info-row">
+            <span class="info-label">Department</span>
+            <span class="info-value">{{ profile.department|default:"—" }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Course Representative</span>
+            <span class="info-value">{{ profile.course_rep_name|default:"—" }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent tools -->
+      <div class="card shadow-sm info-card">
+        <div class="card-header">
+          What's Next
+        </div>
+        <div class="card-body">
+          <p class="text-secondary mb-4">
+            {% if verified %}
+            Your Student Agent account is verified. Here's what you can do right now.
+            {% else %}
+            Your account is still pending school verification, but you can already start using these tools.
+            {% endif %}
+          </p>
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <a href="{% url 'create_listing' %}" class="text-decoration-none">
+                <div class="card feature-box shadow-sm bg-light">
+                  <div class="feature-icon bg-primary-subtle text-primary">
+                    <i class="bi bi-house-door"></i>
+                  </div>
+                  <h6 class="fw-bold mb-1 text-dark">List Rooms</h6>
+                  <p class="text-secondary small mb-2">Share verified rooms near your campus with other students.</p>
+                  <span class="badge bg-primary-subtle text-primary">{{ listings|length }} listed</span>
+                </div>
+              </a>
+            </div>
+            <div class="col-md-4">
+              <a href="{% url 'search' %}" class="text-decoration-none">
+                <div class="card feature-box shadow-sm bg-light">
+                  <div class="feature-icon bg-success-subtle text-success">
+                    <i class="bi bi-people"></i>
+                  </div>
+                  <h6 class="fw-bold mb-1 text-dark">Help Classmates</h6>
+                  <p class="text-secondary small mb-0">Connect fellow students with trusted housing options.</p>
+                </div>
+              </a>
+            </div>
+            <div class="col-md-4">
+              <div class="card feature-box shadow-sm bg-light">
+                <div class="feature-icon bg-warning-subtle text-warning">
+                  <i class="bi bi-graph-up"></i>
+                </div>
+                <h6 class="fw-bold mb-1">Track Interest</h6>
+                <p class="text-secondary small mb-2">See which listings students are saving and contacting.</p>
+                <span class="badge bg-warning-subtle text-warning">{{ interested_count }} saves</span>
+              </div>
+            </div>
+          </div>
+
+          {% if listings %}
+          <div class="mt-4">
+            <h6 class="fw-bold small text-secondary text-uppercase mb-2">Your Listings</h6>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle mb-0">
+                <tbody>
+                  {% for listing in listings %}
+                  <tr>
+                    <td class="small">{{ listing.general_location }}</td>
+                    <td class="small">₦{{ listing.rent_amount|floatformat:0 }}</td>
+                    <td>
+                      <span class="badge bg-{% if listing.status == 'live' %}success{% elif listing.status == 'pending' %}warning text-dark{% elif listing.status == 'archived' %}secondary{% else %}light text-dark{% endif %}">
+                        {{ listing.get_status_display }}
+                      </span>
+                    </td>
+                    <td class="text-end">
+                      <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-eye"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if interested %}
+          <div class="mt-4">
+            <h6 class="fw-bold small text-secondary text-uppercase mb-2">Recent Interest</h6>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle mb-0">
+                <tbody>
+                  {% for save in interested %}
+                  <tr>
+                    <td class="small">{{ save.student.get_full_name|default:save.student.username }}</td>
+                    <td class="small">
+                      <a href="{% url 'listing_detail' save.listing.pk %}" class="text-decoration-none">
+                        {{ save.listing.general_location }}
+                      </a>
+                    </td>
+                    <td class="text-end small text-secondary">{{ save.saved_at|timesince }} ago</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 {% endblock %}

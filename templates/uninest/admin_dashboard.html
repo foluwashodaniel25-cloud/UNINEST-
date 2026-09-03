@@ -1,0 +1,661 @@
+{% extends "base.html" %}
+{% block title %}Staff Dashboard – UNINEST{% endblock %}
+
+{% block extra_head %}
+<style>
+  :root {
+    --ta-primary: #465fff;
+    --ta-success: #12b76a;
+    --ta-danger: #f04438;
+    --ta-warning: #f79009;
+    --ta-gray-50: #f9fafb;
+    --ta-gray-100: #f2f4f7;
+    --ta-gray-200: #e4e7ec;
+    --ta-gray-500: #667085;
+    --ta-gray-700: #344054;
+    --ta-gray-900: #101828;
+  }
+
+  body {
+    background: #f9fafb !important;
+  }
+
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .dashboard-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ta-gray-900);
+    margin: 0;
+  }
+
+  /* ── Stat cards ── */
+  .stat-card {
+    background: #fff;
+    border: 1px solid var(--ta-gray-200);
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    height: 100%;
+    transition: box-shadow 0.2s ease;
+  }
+  .stat-card:hover {
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.08);
+  }
+
+  .stat-card .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+  }
+  .stat-icon.bg-primary-subtle { background: #eef4ff; color: var(--ta-primary); }
+  .stat-icon.bg-success-subtle { background: #ecfdf3; color: var(--ta-success); }
+  .stat-icon.bg-warning-subtle { background: #fffaeb; color: var(--ta-warning); }
+  .stat-icon.bg-info-subtle    { background: #f0f9ff; color: #0ba5ec; }
+
+  .stat-card .stat-label {
+    font-size: 0.875rem;
+    color: var(--ta-gray-500);
+    margin-bottom: 0.35rem;
+  }
+  .stat-card .stat-num {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--ta-gray-900);
+    line-height: 1.2;
+  }
+  .stat-card .stat-change {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+  }
+  .stat-change.up   { color: var(--ta-success); }
+  .stat-change.down { color: var(--ta-danger); }
+
+  /* ── Cards ── */
+  .ta-card {
+    background: #fff;
+    border: 1px solid var(--ta-gray-200);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+  .ta-card .ta-card-header {
+    padding: 1.1rem 1.5rem;
+    border-bottom: 1px solid var(--ta-gray-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ta-card .ta-card-header strong {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ta-gray-900);
+  }
+  .ta-card .ta-card-body {
+    padding: 1.25rem 1.5rem;
+  }
+
+  /* ── Pending verification item ── */
+  .vr-item {
+    border: 1px solid var(--ta-gray-200);
+    border-radius: 0.75rem;
+    padding: 1rem 1.15rem;
+    margin-bottom: 0.85rem;
+    background: #fff;
+  }
+  .vr-item:last-child { margin-bottom: 0; }
+
+  /* ── Tables ── */
+  .ta-table {
+    width: 100%;
+    margin: 0;
+  }
+  .ta-table th {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ta-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid var(--ta-gray-200);
+    padding: 0.65rem 0.75rem;
+  }
+  .ta-table td {
+    font-size: 0.875rem;
+    color: var(--ta-gray-700);
+    border-bottom: 1px solid var(--ta-gray-100);
+    padding: 0.85rem 0.75rem;
+    vertical-align: middle;
+  }
+  .ta-table tr:last-child td { border-bottom: none; }
+
+  /* ── Badges ── */
+  .badge-soft-success {
+    background: #ecfdf3;
+    color: #027a48;
+    font-weight: 500;
+    padding: 0.3em 0.65em;
+    border-radius: 9999px;
+  }
+  .badge-soft-warning {
+    background: #fffaeb;
+    color: #b54708;
+    font-weight: 500;
+    padding: 0.3em 0.65em;
+    border-radius: 9999px;
+  }
+  .badge-soft-danger {
+    background: #fef3f2;
+    color: #b42318;
+    font-weight: 500;
+    padding: 0.3em 0.65em;
+    border-radius: 9999px;
+  }
+  .badge-soft-primary {
+    background: #eef4ff;
+    color: #3538cd;
+    font-weight: 500;
+    padding: 0.3em 0.65em;
+    border-radius: 9999px;
+  }
+
+  /* ── Buttons ── */
+  .btn-ta-primary {
+    background: var(--ta-primary);
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+  }
+  .btn-ta-primary:hover { background: #3641f5; color: #fff; }
+
+  .btn-ta-success {
+    background: var(--ta-success);
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  .btn-ta-success:hover { background: #0e9f6e; color: #fff; }
+
+  .btn-ta-outline-danger {
+    background: transparent;
+    color: var(--ta-danger);
+    border: 1px solid #fda29b;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  .btn-ta-outline-danger:hover {
+    background: #fef3f2;
+    color: var(--ta-danger);
+  }
+
+  .btn-ta-outline {
+    background: #fff;
+    color: var(--ta-gray-700);
+    border: 1px solid var(--ta-gray-200);
+    border-radius: 0.5rem;
+    font-weight: 500;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+  }
+  .btn-ta-outline:hover {
+    background: var(--ta-gray-50);
+    color: var(--ta-gray-900);
+  }
+
+  .btn-ta-warning {
+    background: var(--ta-warning);
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  .btn-ta-warning:hover { background: #dc7c05; color: #fff; }
+
+  /* ── Empty state ── */
+  .empty-state {
+    color: var(--ta-gray-500);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 1.5rem 0;
+  }
+
+  /* ── Gauge / progress style (for pending) ── */
+  .mini-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-3 px-lg-4">
+
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h2><i class="bi bi-speedometer2 me-2" style="color:var(--ta-primary)"></i>Staff Dashboard</h2>
+    <a href="{% url 'export_payments_csv' %}" class="btn btn-ta-outline">
+      <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export Payments CSV
+    </a>
+  </div>
+
+  <!-- ── Top stats row ── -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-primary-subtle">
+          <i class="bi bi-cash-stack"></i>
+        </div>
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-num">₦{{ total_revenue|floatformat:0 }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-success-subtle">
+          <i class="bi bi-people"></i>
+        </div>
+        <div class="stat-label">Total Users</div>
+        <div class="stat-num">{{ total_users }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-info-subtle">
+          <i class="bi bi-house-door"></i>
+        </div>
+        <div class="stat-label">Live Listings</div>
+        <div class="stat-num">{{ live_listings }}</div>
+        <div class="stat-change" style="color:var(--ta-gray-500)">
+          {{ total_listings }} total
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-warning-subtle">
+          <i class="bi bi-shield-exclamation"></i>
+        </div>
+        <div class="stat-label">Pending Verifications</div>
+        <div class="stat-num" style="color:var(--ta-warning)">{{ pending_count }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- ── Pending verifications (left) ── -->
+    <div class="col-lg-7">
+      <div class="ta-card h-100">
+        <div class="ta-card-header">
+          <strong>Pending Verifications</strong>
+          {% if pending_count %}<span class="badge-soft-warning">{{ pending_count }} waiting</span>{% endif %}
+        </div>
+        <div class="ta-card-body">
+          {% if pending_verifications %}
+            {% for vr in pending_verifications %}
+            <div class="vr-item">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                  <div class="fw-semibold" style="color:var(--ta-gray-900)">
+                    {{ vr.user.get_full_name|default:vr.user.username }}
+                  </div>
+                  <div class="small text-secondary mt-1">
+                    {{ vr.user.email }} · {{ vr.get_request_type_display }}
+                  </div>
+                  <div class="small text-secondary mt-1">
+                    Submitted {{ vr.submitted_at|timesince }} ago
+                  </div>
+                </div>
+                <div class="d-flex gap-2">
+                  <form method="post" action="{% url 'approve_verification' vr.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-ta-success">
+                      <i class="bi bi-check-lg"></i> Approve
+                    </button>
+                  </form>
+                  <button type="button" class="btn btn-ta-outline-danger"
+                          data-bs-toggle="collapse" data-bs-target="#reject-{{ vr.pk }}">
+                    <i class="bi bi-x-lg"></i> Reject
+                  </button>
+                </div>
+              </div>
+              <div class="collapse mt-3" id="reject-{{ vr.pk }}">
+                <form method="post" action="{% url 'reject_verification' vr.pk %}">
+                  {% csrf_token %}
+                  <textarea name="notes" class="form-control form-control-sm mb-2"
+                            placeholder="Reason for rejection (optional)" rows="2"></textarea>
+                  <button type="submit" class="btn btn-ta-outline-danger btn-sm">Confirm Reject</button>
+                </form>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty-state">No pending verifications right now.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Right column: summary tables ── -->
+    <div class="col-lg-5">
+      <!-- Revenue by Type -->
+      <div class="ta-card mb-4">
+        <div class="ta-card-header">
+          <strong>Revenue by Type</strong>
+        </div>
+        <div class="ta-card-body p-0">
+          {% if revenue_by_type %}
+          <table class="ta-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Count</th>
+                <th class="text-end">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in revenue_by_type %}
+              <tr>
+                <td class="text-capitalize">{{ row.payment_type }}</td>
+                <td>{{ row.count }}</td>
+                <td class="text-end fw-semibold">₦{{ row.total|floatformat:0 }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+            <div class="empty-state px-3">No successful payments yet.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Users by Role -->
+      <div class="ta-card mb-4">
+        <div class="ta-card-header">
+          <strong>Users by Role</strong>
+        </div>
+        <div class="ta-card-body p-0">
+          <table class="ta-table">
+            <tbody>
+              {% for row in users_by_role %}
+              <tr>
+                <td class="text-capitalize">{{ row.role|default:"Unset" }}</td>
+                <td class="text-end fw-semibold">{{ row.count }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Listings by Status -->
+      <div class="ta-card">
+        <div class="ta-card-header">
+          <strong>Listings by Status</strong>
+        </div>
+        <div class="ta-card-body p-0">
+          <table class="ta-table">
+            <tbody>
+              {% for row in listings_by_status %}
+              <tr>
+                <td class="text-capitalize">{{ row.status }}</td>
+                <td class="text-end fw-semibold">{{ row.count }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Recent Payments ── -->
+  <div class="ta-card mt-4">
+    <div class="ta-card-header">
+      <strong>Recent Payments</strong>
+    </div>
+    <div class="ta-card-body p-0">
+      {% if recent_payments %}
+      <div class="table-responsive">
+        <table class="ta-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>User</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th class="text-end">Receipt</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in recent_payments %}
+            <tr>
+              <td class="small">{{ p.created_at|date:"d M Y H:i" }}</td>
+              <td>{{ p.user.get_full_name|default:p.user.username }}</td>
+              <td class="text-capitalize">
+                {{ p.get_payment_type_display }}
+                {% if p.listing %}
+                  <div class="small text-secondary">{{ p.listing.general_location }}</div>
+                {% endif %}
+              </td>
+              <td class="fw-semibold">₦{{ p.amount|floatformat:0 }}</td>
+              <td>
+                {% if p.status == 'succeeded' %}
+                  <span class="badge-soft-success">{{ p.status }}</span>
+                {% elif p.status == 'pending' %}
+                  <span class="badge-soft-warning">{{ p.status }}</span>
+                {% else %}
+                  <span class="badge-soft-danger">{{ p.status }}</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                {% if p.status == "succeeded" %}
+                <a href="{% url 'download_receipt' p.pk %}" class="btn btn-ta-outline btn-sm">
+                  <i class="bi bi-download"></i>
+                </a>
+                {% else %}
+                <span class="text-secondary small">—</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <div class="empty-state">No payments yet.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ── Listings Awaiting Review ── -->
+  <div class="ta-card mt-4">
+    <div class="ta-card-header">
+      <strong>Listings Awaiting Review</strong>
+    </div>
+    <div class="ta-card-body p-0">
+      {% if pending_listings %}
+      <div class="table-responsive">
+        <table class="ta-table">
+          <thead>
+            <tr>
+              <th>Location</th>
+              <th>Owner</th>
+              <th>Rent</th>
+              <th>Submitted</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for listing in pending_listings %}
+            <tr>
+              <td>{{ listing.general_location }}</td>
+              <td>{{ listing.owner.get_full_name|default:listing.owner.username }}</td>
+              <td class="fw-semibold">₦{{ listing.rent_amount|floatformat:0 }}</td>
+              <td class="small text-secondary">{{ listing.created_at|timesince }} ago</td>
+              <td class="text-end">
+                <div class="d-flex gap-2 justify-content-end">
+                  <form method="post" action="{% url 'approve_listing' listing.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-ta-success btn-sm">
+                      <i class="bi bi-check-lg"></i> Approve
+                    </button>
+                  </form>
+                  <form method="post" action="{% url 'archive_listing' listing.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-ta-outline-danger btn-sm">
+                      <i class="bi bi-archive"></i> Archive
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <div class="empty-state">No listings awaiting review.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ── Featured Listings ── -->
+  <div class="ta-card mt-4">
+    <div class="ta-card-header">
+      <strong>Featured Listings</strong>
+      <span class="small text-secondary">Shown on the landing page · pick up to 6</span>
+    </div>
+    <div class="ta-card-body p-0">
+      {% if live_listings_for_featuring %}
+      <div class="table-responsive">
+        <table class="ta-table">
+          <thead>
+            <tr>
+              <th>Location</th>
+              <th>Owner</th>
+              <th>Rent</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for listing in live_listings_for_featuring %}
+            <tr>
+              <td>{{ listing.general_location }}</td>
+              <td>{{ listing.owner.get_full_name|default:listing.owner.username }}</td>
+              <td class="fw-semibold">₦{{ listing.rent_amount|floatformat:0 }}</td>
+              <td>
+                {% if listing.is_featured %}
+                <span class="badge-soft-warning"><i class="bi bi-star-fill"></i> Featured</span>
+                {% else %}
+                <span class="text-secondary small">Not featured</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <form method="post" action="{% url 'toggle_featured_listing' listing.pk %}">
+                  {% csrf_token %}
+                  {% if listing.is_featured %}
+                  <button type="submit" class="btn btn-ta-outline btn-sm">
+                    <i class="bi bi-star"></i> Unfeature
+                  </button>
+                  {% else %}
+                  <button type="submit" class="btn btn-ta-warning btn-sm">
+                    <i class="bi bi-star-fill"></i> Feature
+                  </button>
+                  {% endif %}
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <div class="empty-state">No live listings yet to feature.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ── Recent Users ── -->
+  <div class="ta-card mt-4">
+    <div class="ta-card-header">
+      <strong>Recent Users</strong>
+    </div>
+    <div class="ta-card-body p-0">
+      {% if recent_users %}
+      <div class="table-responsive">
+        <table class="ta-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Joined</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in recent_users %}
+            <tr>
+              <td>{{ u.get_full_name|default:u.username }}</td>
+              <td class="small">{{ u.email }}</td>
+              <td class="text-capitalize">{{ u.role|default:"—" }}</td>
+              <td class="small">{{ u.date_joined|date:"d M Y" }}</td>
+              <td>
+                {% if u.is_active %}
+                  <span class="badge-soft-success">Active</span>
+                {% else %}
+                  <span class="badge-soft-danger">Suspended</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                {% if u.pk != request.user.pk and not u.is_superuser %}
+                <form method="post" action="{% url 'toggle_user_active' u.pk %}">
+                  {% csrf_token %}
+                  {% if u.is_active %}
+                  <button type="submit" class="btn btn-ta-outline-danger btn-sm">Suspend</button>
+                  {% else %}
+                  <button type="submit" class="btn btn-ta-success btn-sm">Reactivate</button>
+                  {% endif %}
+                </form>
+                {% else %}
+                <span class="text-secondary small">—</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <div class="empty-state">No users yet.</div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

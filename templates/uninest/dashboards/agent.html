@@ -1,76 +1,315 @@
 {% extends "base.html" %}
 {% block title %}Agent Dashboard{% endblock %}
+
+{% block extra_head %}
+<style>
+  .dashboard-header {
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .profile-card {
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .profile-photo-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 1rem;
+  }
+
+  .profile-photo-wrapper img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 14px rgba(0,0,0,.12);
+  }
+
+  .profile-photo-wrapper .photo-placeholder {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #ced4da;
+  }
+
+  /* The + button */
+  .photo-add-btn {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--bs-primary);
+    color: #fff;
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.18);
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+
+  .photo-add-btn:hover {
+    transform: scale(1.08);
+    background: #0d7a72;
+  }
+
+  .photo-add-btn input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .stats-row .stat-box {
+    border: none;
+    border-radius: 0.85rem;
+    padding: 1.15rem 1rem;
+    text-align: center;
+    height: 100%;
+  }
+
+  .stats-row .stat-box .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .stats-row .stat-box .stat-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.15rem;
+  }
+
+  .listings-card {
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .listings-card .card-header {
+    background: #fff;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+  }
+
+  .listings-table th {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #6c757d;
+    font-weight: 600;
+    border-bottom-width: 1px;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .listings-table td {
+    padding: 1rem 1.25rem;
+    vertical-align: middle;
+  }
+
+  .listings-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .status-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35em 0.7em;
+    border-radius: 50rem;
+  }
+
+  .empty-state {
+    padding: 3rem 1.5rem;
+    text-align: center;
+  }
+
+  .empty-state i {
+    font-size: 2.75rem;
+    color: #adb5bd;
+    margin-bottom: 0.75rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .dashboard-header h2 {
+      font-size: 1.4rem;
+    }
+    .stats-row .stat-box .stat-value {
+      font-size: 1.45rem;
+    }
+    .listings-table th,
+    .listings-table td {
+      padding: 0.75rem 0.9rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h2>
-      Agent Dashboard
-      {% if is_verified %}
-      <span class="badge bg-primary"><i class="bi bi-patch-check-fill"></i> Verified</span>
-      {% endif %}
-    </h2>
-    <div class="d-flex gap-2">
+<div class="container py-4 py-md-5">
+
+  <!-- Header -->
+  <div class="dashboard-header d-flex justify-content-between align-items-start flex-wrap gap-3">
+    <div>
+      <h2 class="fw-bold mb-1">
+        Agent Dashboard
+        {% if is_verified %}
+          <span class="badge bg-primary ms-1 align-middle" style="font-size:0.7rem;">
+            <i class="bi bi-patch-check-fill me-1"></i>Verified
+          </span>
+        {% endif %}
+      </h2>
+      <p class="text-secondary mb-0 small">Manage your listings and profile</p>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
       {% if not is_verified and not verification_pending %}
-      <a href="{% url 'agent_verify' %}" class="btn btn-outline-primary">Get Verified</a>
+        <a href="{% url 'agent_verify' %}" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-shield-check me-1"></i> Get Verified
+        </a>
       {% elif verification_pending %}
-      <span class="badge bg-warning text-dark align-self-center">Verification pending</span>
+        <span class="badge bg-warning text-dark align-self-center px-3 py-2">
+          <i class="bi bi-hourglass-split me-1"></i> Verification pending
+        </span>
       {% endif %}
-      <a href="{% url 'create_listing' %}" class="btn btn-primary">
-        <i class="bi bi-plus-lg"></i> New Advert
+      <a href="{% url 'create_listing' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg me-1"></i> New Advert
       </a>
     </div>
   </div>
 
   <div class="row g-4">
-    <div class="col-md-3">
-      <div class="card shadow-sm text-center p-3">
-        {% if user.profile_photo %}
-        <img src="{{ user.profile_photo.url }}" class="rounded-circle mx-auto mb-2"
-             width="80" height="80" style="object-fit:cover">
-        {% else %}
-        <i class="bi bi-person-circle display-3 text-secondary"></i>
-        {% endif %}
-        <h5>{{ user.get_full_name }}</h5>
-        <form method="post" action="{% url 'update_profile_photo' %}" enctype="multipart/form-data">
-          {% csrf_token %}
-          <input type="file" name="profile_photo" class="form-control form-control-sm mb-1" accept="image/*">
-          <button class="btn btn-sm btn-outline-primary">Update photo</button>
-        </form>
+
+    <!-- Left column: Profile + Stats -->
+    <div class="col-lg-3">
+
+      <!-- Profile card -->
+      <div class="card shadow-sm profile-card mb-4">
+        <div class="card-body text-center p-4">
+
+          <form method="post" action="{% url 'update_profile_photo' %}" enctype="multipart/form-data" id="photoForm">
+            {% csrf_token %}
+
+            <div class="profile-photo-wrapper">
+              {% if user.profile_photo %}
+                <img src="{{ user.profile_photo.url }}" alt="Profile photo" id="profilePreview">
+              {% else %}
+                <div class="photo-placeholder" id="profilePreview">
+                  <i class="bi bi-person text-secondary" style="font-size:2.8rem;"></i>
+                </div>
+              {% endif %}
+
+              <!-- The + button -->
+              <label class="photo-add-btn" title="Add / change photo">
+                <span>+</span>
+                <input type="file" name="profile_photo" accept="image/*" onchange="this.form.submit()">
+              </label>
+            </div>
+          </form>
+
+          <h5 class="fw-bold mb-0">{{ user.get_full_name|default:user.username }}</h5>
+          <p class="text-secondary small mb-0">Agent Account</p>
+        </div>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="row g-3 stats-row">
+        <div class="col-6 col-lg-12">
+          <div class="card shadow-sm stat-box">
+            <div class="stat-value text-primary">{{ listings|length }}</div>
+            <div class="stat-label">Total Adverts</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-12">
+          <div class="card shadow-sm stat-box">
+            <div class="stat-value text-success">
+              {% with live_count=0 %}
+                {% for l in listings %}
+                  {% if l.status == 'live' %}{% with live_count=live_count|add:1 %}{% endwith %}{% endif %}
+                {% endfor %}
+                {{ live_count }}
+              {% endwith %}
+            </div>
+            <div class="stat-label">Live Listings</div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-md-9">
-      <div class="card shadow-sm">
-        <div class="card-header bg-white"><strong>My Adverts ({{ listings|length }})</strong></div>
+
+    <!-- Right column: Listings table -->
+    <div class="col-lg-9">
+      <div class="card shadow-sm listings-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>My Adverts <span class="text-secondary fw-normal">({{ listings|length }})</span></span>
+          <a href="{% url 'create_listing' %}" class="btn btn-sm btn-primary d-none d-md-inline-flex">
+            <i class="bi bi-plus-lg me-1"></i> New
+          </a>
+        </div>
+
         <div class="card-body p-0">
           {% if listings %}
-          <div class="table-responsive">
-            <table class="table table-hover mb-0">
-              <thead><tr><th>Location</th><th>Rent</th><th>Status</th><th>Created</th></tr></thead>
-              <tbody>
-                {% for l in listings %}
-                <tr>
-                  <td>
-                    {{ l.general_location }}
-                    {% if l.is_verified_agent %}
-                    <i class="bi bi-patch-check-fill text-primary"></i>
-                    {% endif %}
-                  </td>
-                  <td>₦{{ l.rent_amount|floatformat:0 }}</td>
-                  <td>
-                    <span class="badge bg-{% if l.status == 'live' %}success{% elif l.status == 'pending' %}warning text-dark{% else %}secondary{% endif %}">
-                      {{ l.status }}
-                    </span>
-                  </td>
-                  <td>{{ l.created_at|date:"M d" }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+            <div class="table-responsive">
+              <table class="table table-hover listings-table mb-0">
+                <thead>
+                  <tr>
+                    <th>Location</th>
+                    <th>Rent</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for l in listings %}
+                  <tr>
+                    <td>
+                      <div class="fw-medium">{{ l.general_location }}</div>
+                      {% if l.is_verified_agent %}
+                        <small class="text-primary">
+                          <i class="bi bi-patch-check-fill"></i> Verified agent
+                        </small>
+                      {% endif %}
+                    </td>
+                    <td class="fw-semibold">₦{{ l.rent_amount|floatformat:0 }}</td>
+                    <td>
+                      {% if l.status == 'live' %}
+                        <span class="badge status-badge bg-success-subtle text-success">Live</span>
+                      {% elif l.status == 'pending' %}
+                        <span class="badge status-badge bg-warning-subtle text-warning-emphasis">Pending</span>
+                      {% else %}
+                        <span class="badge status-badge bg-secondary-subtle text-secondary">{{ l.status|title }}</span>
+                      {% endif %}
+                    </td>
+                    <td class="text-secondary">{{ l.created_at|date:"M d, Y" }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
           {% else %}
-          <p class="text-muted p-3 mb-0">
-            No adverts yet. <a href="{% url 'create_listing' %}">Upload your first listing</a>
-          </p>
+            <div class="empty-state">
+              <i class="bi bi-house"></i>
+              <h6 class="fw-semibold mb-1">No adverts yet</h6>
+              <p class="text-secondary small mb-3">Upload your first listing to start getting inquiries.</p>
+              <a href="{% url 'create_listing' %}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i> Create First Listing
+              </a>
+            </div>
           {% endif %}
         </div>
       </div>

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pay Rent – {{ listing.general_location }}{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 520px;">
+
+  <div class="card border-0 shadow-sm rounded-4 mb-3">
+    <div class="card-body p-4">
+      <div class="d-flex gap-3 align-items-center">
+        {% if listing.primary_image %}
+        <img src="{{ listing.primary_image }}" alt="{{ listing.general_location }}"
+             class="rounded-3" style="width:72px;height:72px;object-fit:cover;">
+        {% else %}
+        <div class="rounded-3 bg-secondary d-flex align-items-center justify-content-center text-white"
+             style="width:72px;height:72px;">
+          <i class="bi bi-house"></i>
+        </div>
+        {% endif %}
+        <div>
+          <h6 class="fw-bold mb-1">{{ listing.general_location }}</h6>
+          <p class="text-secondary small mb-0">{{ listing.school_name|default:"Near campus" }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow rounded-4">
+    <div class="card-body text-center p-4">
+      <h4 class="fw-bold mb-1">Pay Rent</h4>
+      <p class="text-secondary mb-3">
+        ₦{{ amount|floatformat:0 }} · {{ listing.get_rent_basis_display }}
+      </p>
+
+      <div class="alert alert-light border small text-start mb-4">
+        <i class="bi bi-info-circle text-primary"></i>
+        This payment is collected by UNINEST and forwarded to your landlord/agent.
+        Keep your receipt — you'll get a confirmation once it's verified.
+      </div>
+
+      <button
+        id="payBtn"
+        class="btn btn-success btn-lg w-100 fw-semibold"
+        data-amount-kobo="{{ amount_kobo }}"
+        data-reference="{{ reference }}"
+        data-customer-name="{{ customer_name }}"
+        data-customer-email="{{ customer_email }}"
+        data-public-key="{{ paystack_public_key }}"
+        data-verify-url="{% url 'verify_payment' %}"
+        data-listing-url="{% url 'listing_detail' listing.pk %}"
+        data-dashboard-url="{% url 'dashboard' %}"
+      >
+        Pay ₦{{ amount|floatformat:0 }} with Paystack
+      </button>
+
+      <div id="payStatus" class="mt-3 small"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+  (function () {
+    var payBtn = document.getElementById("payBtn");
+    var statusEl = document.getElementById("payStatus");
+
+    var cfg = {
+      amountKobo: Number(payBtn.dataset.amountKobo),
+      reference: payBtn.dataset.reference,
+      customerName: payBtn.dataset.customerName,
+      customerEmail: payBtn.dataset.customerEmail,
+      publicKey: payBtn.dataset.publicKey,
+      verifyUrl: payBtn.dataset.verifyUrl,
+      listingUrl: payBtn.dataset.listingUrl,
+      dashboardUrl: payBtn.dataset.dashboardUrl,
+    };
+    var originalLabel = payBtn.textContent;
+
+    function getCookie(name) {
+      var match = document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)");
+      return match ? match.pop() : "";
+    }
+
+    function setStatus(msg, isError) {
+      statusEl.textContent = msg;
+      statusEl.className = "mt-3 small " + (isError ? "text-danger" : "text-success");
+    }
+
+    function resetButton() {
+      payBtn.disabled = false;
+      payBtn.textContent = originalLabel;
+    }
+
+    function confirmWithServer() {
+      fetch(cfg.verifyUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: JSON.stringify({ reference: cfg.reference }),
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.ok) {
+            setStatus("Rent payment confirmed! Redirecting…", false);
+            setTimeout(function () {
+              window.location.href = cfg.listingUrl;
+            }, 1200);
+          } else {
+            setStatus("We couldn't confirm this payment: " + (data.error || "unknown error"), true);
+            resetButton();
+          }
+        })
+        .catch(function () {
+          setStatus("Network error while confirming payment. Please contact support with your reference: " + cfg.reference, true);
+          resetButton();
+        });
+    }
+
+    payBtn.addEventListener("click", function () {
+      payBtn.disabled = true;
+      payBtn.textContent = "Opening secure checkout…";
+
+      var handler = PaystackPop.setup({
+        key: cfg.publicKey,
+        email: cfg.customerEmail,
+        amount: cfg.amountKobo,
+        currency: "NGN",
+        ref: cfg.reference,
+        metadata: {
+          custom_fields: [
+            { display_name: "Customer Name", variable_name: "customer_name", value: cfg.customerName }
+          ]
+        },
+        callback: function () {
+          setStatus("Verifying payment…", false);
+          confirmWithServer();
+        },
+        onClose: function () {
+          resetButton();
+        },
+      });
+
+      handler.openIframe();
+    });
+  })();
+</script>
+{% endblock %}
