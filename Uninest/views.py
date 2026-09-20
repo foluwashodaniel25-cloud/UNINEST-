@@ -1,4 +1,3 @@
-
 import json
 import uuid
 from datetime import timedelta
@@ -90,10 +89,34 @@ def listing_detail(request, pk):
     unlocked = False
     if request.user.is_authenticated and request.user.has_active_subscription():
         unlocked = True
-    visit_message = (
-        f"Hi {listing.landlord_name}, I found your listing at {listing.general_location} "
-        f"on UNINEST and would like to book a visit. When works for you?"
-    )
+
+    # The visit request goes to UNINEST's own WhatsApp number (see the
+    # template), never to the landlord/agent, so it's safe to include the
+    # full house details here. Only built for unlocked users because it
+    # contains the full address and landlord name.
+    visit_message = ""
+    if unlocked:
+        user = request.user
+        student_name = user.get_full_name() or user.username
+        student_phone = getattr(user, "phone", "") or ""
+
+        lines = [
+            "Hello UNINEST, I'd like to book a visit.",
+            "",
+            f"Listing: {listing.title or listing.general_location} (ID #{listing.pk})",
+            f"Location: {listing.general_location}",
+            f"Address: {listing.full_address}",
+            f"Landlord: {listing.landlord_name}",
+            f"Rent: ₦{listing.rent_amount:,.0f} / {listing.get_rent_basis_display()}",
+            f"Link: {request.build_absolute_uri()}",
+            "",
+            f"Name: {student_name}",
+        ]
+        if student_phone:
+            lines.append(f"Phone: {student_phone}")
+        lines.append("Please let me know the available times.")
+        visit_message = "\n".join(lines)
+
     return render(request, "uninest/listing_detail.html", {
         "listing": listing,
         "unlocked": unlocked,
