@@ -210,11 +210,9 @@
               </p>
               {% endif %}
             </div>
-            <a href="tel:{{ listing.landlord_phone }}" class="btn btn-primary w-100 mb-2">
-              <i class="bi bi-telephone-fill"></i> Call Landlord
-            </a>
+            
 
-            <a href="https://wa.me/{{ listing.landlord_phone|cut:'+'|cut:' ' }}?text={{ visit_message|urlencode }}"
+            <a href="https://wa.me/2349160431028/{{ listing.landlord_phone|cut:'+'|cut:' ' }}?text={{ visit_message|urlencode }}"
                target="_blank" rel="noopener noreferrer"
                class="btn btn-outline-primary w-100 mb-2">
               <i class="bi bi-calendar-check"></i> Book a Visit
