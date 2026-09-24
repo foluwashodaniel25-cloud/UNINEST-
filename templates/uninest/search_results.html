@@ -1,74 +1,209 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block title %}Search Listings – UNINEST{% endblock %}
 
 {% block extra_head %}
 <style>
-  .sr-search-card {
-    background: linear-gradient(160deg, rgba(13,148,136,.08), rgba(13,148,136,.02));
-    border: 1px solid rgba(13,148,136,.15);
+  :root {
+    --un-primary: #0d9488;
+    --un-primary-dark: #0f766e;
+    --un-soft: #e6f7f5;
   }
+
+  /* ───── Page header ───── */
+  .sr-header h2 {
+    font-weight: 800;
+    color: #0f172a;
+  }
+  [data-bs-theme="dark"] .sr-header h2 {
+    color: #f1f5f9;
+  }
+
+  /* ───── Search card (matches landing floating bar) ───── */
+  .sr-search-card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 10px 36px rgba(13,148,136,.12);
+    border: 1px solid rgba(13,148,136,.08);
+    padding: 1.25rem 1.4rem;
+  }
+  [data-bs-theme="dark"] .sr-search-card {
+    background: #1e293b;
+    box-shadow: 0 10px 36px rgba(0,0,0,.3);
+    border-color: #334155;
+  }
+  .sr-search-card .form-label {
+    font-size: .72rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: .25rem;
+  }
+  .sr-search-card .form-select,
+  .sr-search-card .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: .55rem;
+    font-size: .92rem;
+    padding: .6rem .85rem;
+  }
+  [data-bs-theme="dark"] .sr-search-card .form-select,
+  [data-bs-theme="dark"] .sr-search-card .form-control {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+  .sr-search-card .form-select:focus,
+  .sr-search-card .form-control:focus {
+    border-color: var(--un-primary);
+    box-shadow: 0 0 0 3px rgba(13,148,136,.15);
+  }
+  .btn-search {
+    background: var(--un-primary);
+    color: #fff;
+    border: none;
+    border-radius: .6rem;
+    font-weight: 600;
+    padding: .65rem 1.3rem;
+    min-height: 46px;
+  }
+  .btn-search:hover {
+    background: var(--un-primary-dark);
+    color: #fff;
+  }
+
+  /* ───── Listing cards (same style as landing) ───── */
   .sr-listing-card {
-    transition: transform .18s ease, box-shadow .18s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
     overflow: hidden;
+    background: #fff;
+    transition: transform .2s, box-shadow .2s;
+    height: 100%;
+  }
+  [data-bs-theme="dark"] .sr-listing-card {
+    background: #1e293b;
+    border-color: #334155;
   }
   .sr-listing-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 18px 36px rgba(0,0,0,.09);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 36px rgba(0,0,0,.09);
   }
-  .sr-listing-img, .listing-img-placeholder {
-    height: 200px;
+  .sr-listing-img,
+  .listing-img-placeholder {
+    height: 180px;
     object-fit: cover;
+    width: 100%;
+  }
+  .badge-verified {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--un-primary);
+    color: #fff;
+    font-size: .68rem;
+    font-weight: 600;
+    padding: .28rem .6rem;
+    border-radius: 999px;
+  }
+  .sr-listing-card .card-body {
+    padding: 1rem 1.1rem 1.2rem;
+  }
+  .sr-listing-card h5 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: .2rem;
+  }
+  .sr-listing-card .loc {
+    font-size: .8rem;
+    color: #64748b;
+    margin-bottom: .5rem;
+  }
+  [data-bs-theme="dark"] .sr-listing-card .loc {
+    color: #94a3b8;
+  }
+  .sr-listing-card .price {
+    font-weight: 800;
+    color: var(--un-primary);
+    font-size: 1.1rem;
   }
   .sr-fact-pill {
-    font-size: .78rem;
-    padding: .25rem .6rem;
-    border-radius: 2rem;
-    background: var(--bs-tertiary-bg, #f1f3f5);
-    color: var(--bs-secondary-color, #6c757d);
+    font-size: .76rem;
+    padding: .28rem .65rem;
+    border-radius: 999px;
+    background: var(--un-soft);
+    color: var(--un-primary-dark);
   }
+  [data-bs-theme="dark"] .sr-fact-pill {
+    background: rgba(13,148,136,.18);
+    color: #5eead4;
+  }
+  .btn-details {
+    border: 1.5px solid var(--un-primary);
+    color: var(--un-primary);
+    border-radius: 999px;
+    font-size: .85rem;
+    font-weight: 600;
+    padding: .45rem 1rem;
+    background: transparent;
+  }
+  .btn-details:hover {
+    background: var(--un-primary);
+    color: #fff;
+  }
+
+  /* ───── Empty states ───── */
   .sr-empty-icon {
-    width: 88px; height: 88px;
+    width: 88px;
+    height: 88px;
     border-radius: 50%;
-    background: rgba(13,148,136,.08);
+    background: var(--un-soft);
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    color: var(--un-primary);
+  }
+  [data-bs-theme="dark"] .sr-empty-icon {
+    background: rgba(13,148,136,.18);
+    color: #5eead4;
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container py-4 py-md-5">
 
-  <div class="mb-4">
-    <h2 class="fw-bold mb-1">Find Housing Near Your School</h2>
+  <!-- Page header -->
+  <div class="sr-header mb-4">
+    <h2 class="mb-1">Find Housing Near Your School</h2>
     <p class="text-secondary mb-0">Search verified listings by campus or neighborhood.</p>
   </div>
 
   <!-- Search card -->
-  <form method="get" class="sr-search-card rounded-4 shadow-sm p-4 mb-5">
+  <form method="get" class="sr-search-card mb-5">
     <div class="row g-3 align-items-end">
       <div class="col-md-5">
-        <label class="form-label small fw-semibold text-secondary">
-          <i class="bi bi-mortarboard-fill text-primary"></i> School name
-        </label>
+        <label class="form-label">University / School</label>
         <select name="school_name" class="form-select">
           <option value="">Any School</option>
           {% for school in available_schools %}
-          <option value="{{ school }}" {% if request.GET.school_name == school %}selected{% endif %}>{{ school }}</option>
+          <option value="{{ school }}" {% if request.GET.school_name == school %}selected{% endif %}>
+            {{ school }}
+          </option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-5">
-        <label class="form-label small fw-semibold text-secondary">
-          <i class="bi bi-geo-alt-fill text-primary"></i> Location / area
-        </label>
+        <label class="form-label">Location / Area</label>
         {{ form.location }}
       </div>
       <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100 py-2">
-          <i class="bi bi-search"></i> Search
+        <button type="submit" class="btn btn-search w-100">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
+          Search
         </button>
       </div>
     </div>
@@ -76,54 +211,53 @@
 
   {% if listings %}
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-4">
     <p class="text-secondary mb-0">
-      <strong class="text-dark">{{ listings|length }}</strong> listing{{ listings|length|pluralize }} found
+      <strong class="text-dark">{{ listings|length }}</strong>
+      listing{{ listings|length|pluralize }} found
     </p>
   </div>
 
-  <div class="row g-4">
+  <div class="row g-3 g-md-4">
     {% for listing in listings %}
     <div class="col-md-6 col-lg-4">
-      <div class="card sr-listing-card border-0 shadow-sm h-100 rounded-4">
-
+      <div class="sr-listing-card position-relative">
         <div class="position-relative">
           {% if listing.primary_image %}
-          <img src="{{ listing.primary_image }}" class="card-img-top sr-listing-img" alt="{{ listing.general_location }}">
+          <img src="{{ listing.primary_image }}" class="sr-listing-img" alt="{{ listing.general_location }}">
           {% else %}
           <div class="listing-img-placeholder d-flex align-items-center justify-content-center bg-secondary text-white">
             <i class="bi bi-house display-4"></i>
           </div>
           {% endif %}
+
           {% if listing.is_verified_agent %}
-          <span class="badge bg-primary position-absolute top-0 start-0 m-2 py-2 px-3 rounded-pill shadow-sm">
-            <i class="bi bi-patch-check-fill"></i> Verified
-          </span>
+          <span class="badge-verified">Verified</span>
           {% endif %}
         </div>
 
         <div class="card-body d-flex flex-column">
-          <h5 class="card-title fw-bold mb-1">{{ listing.general_location }}</h5>
-          <p class="card-text text-secondary small mb-2">
-            <i class="bi bi-mortarboard"></i> {{ listing.school_name|default:"Near campus" }}
-          </p>
+          <h5>{{ listing.general_location|truncatechars:32 }}</h5>
+          <div class="loc">
+             {{ listing.school_name|default:"Near campus" }}
+          </div>
 
-          <p class="fw-bold text-primary fs-5 mb-2">
+          <div class="price mb-2">
             ₦{{ listing.rent_amount|floatformat:0 }}
-            <span class="fs-6 text-secondary fw-normal">/ {{ listing.get_rent_basis_display }}</span>
-          </p>
+            <small class="text-muted fw-normal">/ {{ listing.get_rent_basis_display|lower }}</small>
+          </div>
 
           <div class="d-flex flex-wrap gap-2 mb-3">
             <span class="sr-fact-pill">
-              <i class="bi bi-door-open"></i> {{ listing.number_of_rooms }} room{{ listing.number_of_rooms|pluralize }}
+               {{ listing.number_of_rooms }} room{{ listing.number_of_rooms|pluralize }}
             </span>
             <span class="sr-fact-pill">
-              <i class="bi bi-people"></i> Max {{ listing.max_tenants }}
+               Max {{ listing.max_tenants }}
             </span>
           </div>
 
-          <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-outline-primary w-100 mt-auto">
-            View Address &amp; Details
+          <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-details w-100 mt-auto">
+            View Details →
           </a>
         </div>
       </div>
@@ -134,7 +268,7 @@
   {% elif query %}
   <div class="text-center py-5">
     <div class="sr-empty-icon mb-3">
-      <i class="bi bi-emoji-frown fs-2 text-primary"></i>
+      <i class="bi bi-emoji-frown fs-2"></i>
     </div>
     <h5 class="fw-bold">No listings match that search</h5>
     <p class="text-secondary">Try a broader school name or a nearby area instead.</p>
@@ -142,11 +276,12 @@
   {% else %}
   <div class="text-center py-5">
     <div class="sr-empty-icon mb-3">
-      <i class="bi bi-search fs-2 text-primary"></i>
+      <i class="bi bi-search fs-2"></i>
     </div>
     <h5 class="fw-bold">Start your search</h5>
     <p class="text-secondary">Enter a school and location above to browse available houses.</p>
   </div>
   {% endif %}
+
 </div>
 {% endblock %}

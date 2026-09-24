@@ -5,765 +5,657 @@
 
 {% block extra_head %}
 <style>
-  /* ───── Base / Shared ───── */
-  .hero-shape { position: relative; }
+  :root {
+    --un-primary: #0d9488;
+    --un-primary-dark: #0f766e;
+    --un-soft: #e6f7f5;
+  }
+
+  /* ───── Hero ───── */
+  .hero {
+    background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 65%);
+    padding: 2.75rem 0 1.25rem;
+  }
+  [data-bs-theme="dark"] .hero {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 65%);
+  }
   .hero-badge {
-    position: absolute;
-    z-index: 3;
-    box-shadow: 0 10px 30px rgba(0,0,0,.12);
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: var(--un-soft);
+    color: var(--un-primary-dark);
+    font-size: .8rem;
+    font-weight: 600;
+    padding: .38rem .95rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
   }
-  .stat-strip .stat-num { font-size: 2.25rem; font-weight: 800; }
-  .search-card {
-    margin-top: -50px;
+  [data-bs-theme="dark"] .hero-badge {
+    background: rgba(13,148,136,.2);
+    color: #5eead4;
+  }
+  .hero h1 {
+    font-size: clamp(1.85rem, 4vw, 2.85rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: .85rem;
+    color: #0f172a;                 /* dark text in light mode */
+  }
+  [data-bs-theme="dark"] .hero h1 {
+    color: #f1f5f9;                 /* light text in dark mode */
+  }
+  .hero h1 span {
+    color: var(--un-primary);       /* green only on last part */
+  }
+  .hero-sub {
+  font-size: 1.08rem;
+  color: #334155 !important;        /* darker grey – fully visible in light mode */
+  max-width: 480px;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+[data-bs-theme="dark"] .hero-sub {
+  color: #94a3b8 !important;        /* lighter grey for dark mode */
+}
+  .hero-img {
+    border-radius: 1.2rem;
+    width: 100%;
+    max-height: 380px;
+    object-fit: cover;
+    object-position: top center;
+    box-shadow: 0 18px 45px rgba(0,0,0,.1);
+  }
+
+  /* ───── Search bar ───── */
+  .search-bar {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 10px 36px rgba(13,148,136,.12);
+    padding: 1rem 1.2rem;
+    margin-top: -2rem;
     position: relative;
-    z-index: 5;
+    z-index: 10;
   }
-  .service-card { transition: transform .2s ease, box-shadow .2s ease; }
-  .service-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,.08); }
-  .agent-card img,
-  .agent-card .agent-img-placeholder { height: 260px; object-fit: cover; }
-  .listing-card img { height: 220px; object-fit: cover; }
-  .uni-card img { height: 130px; object-fit: cover; }
-  .uni-card { transition: transform .2s ease, box-shadow .2s ease; }
-  .uni-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,.1); }
-  .play-btn {
-    width: 64px; height: 64px; border-radius: 50%;
-    display: inline-flex; align-items: center; justify-content: center;
+  [data-bs-theme="dark"] .search-bar {
+    background: #1e293b;
+    box-shadow: 0 10px 36px rgba(0,0,0,.3);
   }
-  .cta-band { background: linear-gradient(135deg, var(--bs-primary), #0b5f5c); }
+  .search-bar .form-label {
+    font-size: .7rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: .18rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .search-bar .form-select,
+  .search-bar .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: .55rem;
+    font-size: .9rem;
+    padding: .55rem .8rem;
+  }
+  [data-bs-theme="dark"] .search-bar .form-select,
+  [data-bs-theme="dark"] .search-bar .form-control {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+  .search-bar .form-select:focus,
+  .search-bar .form-control:focus {
+    border-color: var(--un-primary);
+    box-shadow: 0 0 0 3px rgba(13,148,136,.15);
+  }
+  .btn-search {
+    background: var(--un-primary);
+    color: #fff;
+    border: none;
+    border-radius: .6rem;
+    font-weight: 600;
+    padding: .65rem 1.3rem;
+    min-height: 44px;
+  }
+  .btn-search:hover { background: var(--un-primary-dark); color: #fff; }
 
-  .reveal {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity .7s ease, transform .7s ease;
+  /* ───── Trust badges ───── */
+  .trust-strip { padding: 2rem 0 1rem; }
+  .trust-item { text-align: center; padding: .6rem .3rem; }
+  .trust-icon {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--un-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--un-primary);
+    margin-bottom: .55rem;
   }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: translateY(0);
+  [data-bs-theme="dark"] .trust-icon {
+    background: rgba(13,148,136,.18);
+    color: #5eead4;
   }
-  .reveal-stagger > * {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity .6s ease, transform .6s ease;
-  }
-  .reveal-stagger.is-visible > * {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .reveal-stagger.is-visible > *:nth-child(1) { transition-delay: .05s; }
-  .reveal-stagger.is-visible > *:nth-child(2) { transition-delay: .15s; }
-  .reveal-stagger.is-visible > *:nth-child(3) { transition-delay: .25s; }
-  .reveal-stagger.is-visible > *:nth-child(4) { transition-delay: .35s; }
+  .trust-item h6 { font-weight: 700; font-size: .9rem; margin-bottom: .15rem; }
+  .trust-item p { font-size: .76rem; color: #64748b; margin: 0; line-height: 1.3; }
+  [data-bs-theme="dark"] .trust-item p { color: #94a3b8; }
 
-  @media (prefers-reduced-motion: reduce) {
-    .reveal, .reveal-stagger > * {
-      opacity: 1 !important;
-      transform: none !important;
-      transition: none !important;
-    }
+  /* ───── Listing cards ───── */
+  .listing-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: #fff;
+    transition: transform .2s, box-shadow .2s;
+    height: 100%;
+  }
+  [data-bs-theme="dark"] .listing-card {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  .listing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 36px rgba(0,0,0,.09);
+  }
+  .listing-card img {
+    height: 165px;
+    object-fit: cover;
+    width: 100%;
+  }
+  .badge-verified {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: var(--un-primary);
+    color: #fff;
+    font-size: .65rem;
+    font-weight: 600;
+    padding: .25rem .5rem;
+    border-radius: 999px;
+  }
+  .heart {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 28px; height: 28px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: .85rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,.1);
+  }
+  .listing-card .card-body { padding: .9rem 1rem 1.1rem; }
+  .listing-card h5 { font-size: .92rem; font-weight: 700; margin-bottom: .15rem; }
+  .listing-card .loc { font-size: .76rem; color: #64748b; margin-bottom: .4rem; }
+  [data-bs-theme="dark"] .listing-card .loc { color: #94a3b8; }
+  .listing-card .price { font-weight: 800; color: var(--un-primary); font-size: 1rem; }
+  .listing-card .meta { font-size: .74rem; color: #64748b; }
+  [data-bs-theme="dark"] .listing-card .meta { color: #94a3b8; }
+  .btn-details {
+    border: 1.5px solid var(--un-primary);
+    color: var(--un-primary);
+    border-radius: 999px;
+    font-size: .8rem;
+    font-weight: 600;
+    padding: .35rem .9rem;
+    background: transparent;
+  }
+  .btn-details:hover { background: var(--un-primary); color: #fff; }
+
+  /* ───── How it works ───── */
+  .how-icon {
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background: var(--un-soft);
+    color: var(--un-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    margin-bottom: .75rem;
+  }
+  [data-bs-theme="dark"] .how-icon {
+    background: rgba(13,148,136,.18);
+    color: #5eead4;
+  }
+  .how-step h6 { font-weight: 700; margin-bottom: .25rem; }
+  .how-step p { font-size: .82rem; color: #64748b; margin: 0; }
+  [data-bs-theme="dark"] .how-step p { color: #94a3b8; }
+
+  /* ───── Testimonials ───── */
+  .testimonial-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.15rem;
+    height: 100%;
+  }
+  [data-bs-theme="dark"] .testimonial-card {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  .testimonial-card img {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .stars { color: #f59e0b; font-size: .8rem; }
+
+  /* ───── University pills ───── */
+  .uni-pill {
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    padding: .38rem .9rem;
+    font-size: .85rem;
+    font-weight: 600;
+    color: #334155;
+    text-decoration: none;
+    transition: all .15s;
+  }
+  [data-bs-theme="dark"] .uni-pill {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+  .uni-pill:hover {
+    border-color: var(--un-primary);
+    color: var(--un-primary);
+    background: var(--un-soft);
+  }
+  [data-bs-theme="dark"] .uni-pill:hover {
+    background: rgba(13,148,136,.15);
+    color: #5eead4;
   }
 
-  .count-up { font-variant-numeric: tabular-nums; }
-
-  /* ───── Responsive refinements ───── */
-
-  /* Large tablets & small desktops */
-  @media (max-width: 991.98px) {
-    .hero-shape .display-4 {
-      font-size: 2.4rem;
-    }
-    .search-card {
-      margin-top: -30px;
-    }
-    .stat-strip .stat-num {
-      font-size: 1.9rem;
-    }
-    .agent-card img,
-    .agent-card .agent-img-placeholder {
-      height: 220px;
-    }
+  /* ───── CTA ───── */
+  .cta-band {
+    background: linear-gradient(135deg, var(--un-primary), #0f766e);
+    border-radius: 1.1rem;
+    padding: 2.1rem 1.6rem;
+    color: #fff;
   }
+  .cta-band h2 { font-weight: 800; font-size: 1.5rem; }
+  .btn-cta-light {
+    background: #fff;
+    color: var(--un-primary);
+    font-weight: 700;
+    border-radius: 999px;
+    padding: .6rem 1.5rem;
+  }
+  .btn-cta-light:hover { background: #f0fdfa; color: var(--un-primary-dark); }
 
-  /* Tablets & large phones */
   @media (max-width: 767.98px) {
-    .hero-shape {
-      padding-top: 1.5rem !important;
-      padding-bottom: 1.5rem !important;
-    }
-    .hero-shape .display-4 {
-      font-size: 2rem;
-      line-height: 1.2 !important;
-    }
-    .hero-shape .fs-5 {
-      font-size: 1.05rem !important;
-    }
-    .hero-shape img[style*="height:420px"] {
-      height: 280px !important;
-    }
-    .search-card {
-      margin-top: -20px;
-      padding: 1.25rem !important;
-    }
-    .search-card .form-control-lg,
-    .search-card .form-select-lg,
-    .search-card .btn-lg {
-      font-size: 1rem;
-      padding: 0.65rem 0.9rem;
-    }
-    .stat-strip .stat-num {
-      font-size: 1.65rem;
-    }
-    .stat-strip .text-secondary {
-      font-size: 0.85rem;
-    }
-    .listing-card img {
-      height: 200px;
-    }
-    .uni-card img {
-      height: 110px;
-    }
-    .agent-card img,
-    .agent-card .agent-img-placeholder {
-      height: 200px;
-    }
-    .play-btn {
-      width: 56px;
-      height: 56px;
-    }
-    .cta-band .display-5 {
-      font-size: 1.85rem;
-    }
-    .cta-band img[style*="height:340px"] {
-      height: 240px !important;
-    }
-  }
-
-  /* Small phones */
-  @media (max-width: 575.98px) {
-    .hero-shape .display-4 {
-      font-size: 1.75rem;
-    }
-    .hero-shape img[style*="height:420px"] {
-      height: 230px !important;
-    }
-    .search-card {
-      margin-top: -12px;
-      border-radius: 1rem !important;
-    }
-    .stat-strip .stat-num {
-      font-size: 1.4rem;
-    }
-    .stat-strip .text-secondary {
-      font-size: 0.78rem;
-    }
-    .uni-card img {
-      height: 100px;
-    }
-    .uni-card .card-body {
-      padding: 0.65rem 0.4rem !important;
-    }
-    .uni-card h6 {
-      font-size: 0.85rem;
-    }
-    .service-card {
-      padding: 1.25rem !important;
-    }
-    .cta-band .display-5 {
-      font-size: 1.6rem;
-    }
-    .cta-band .btn-lg {
-      width: 100%;
-    }
-  }
-
-  /* Very small screens */
-  @media (max-width: 380px) {
-    .hero-shape .display-4 {
-      font-size: 1.55rem;
-    }
-    .stat-strip .stat-num {
-      font-size: 1.25rem;
-    }
+    .hero { padding-top: 1.5rem; }
+    .search-bar { margin-top: -1.3rem; padding: .85rem; }
+    .search-bar .row > [class*="col-"] { margin-bottom: .35rem; }
+    .listing-card img { height: 150px; }
   }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- ───────────────────────── HERO ───────────────────────── -->
-<section class="reveal py-4 py-md-5 hero-shape overflow-hidden">
-  <div class="container py-3 py-md-4">
-    <div class="row align-items-center g-4 g-lg-5">
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center g-4">
       <div class="col-lg-6">
-        <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-3">
-          Verified Student Housing
-        </span>
-        <h1 class="display-4 fw-bold mb-3" style="line-height:1.15;">
-          Find Your Next Room, Close to Campus
+        <div class="hero-badge">
+          <span></span> Verified Student Housing Across Nigeria
+        </div>
+        <h1>
+          Find a verified room <br>
+          <span>near your campus.</span>
         </h1>
-        <p class="text-secondary fs-5 mb-4">
-          UNINEST connects Nigerian students with verified landlords and agents.
-          Browse real listings, see real prices, and unlock full contact details
-          the moment you need them — no more chasing dead leads.
+        <p class="hero-sub mb-0">
+          Safe, affordable and comfortable student housing, from trusted landlords and agents.
         </p>
-        <div class="d-flex flex-wrap gap-2">
-          <a href="{% url 'search' %}" class="btn btn-primary btn-lg px-4">Browse Listings</a>
-          <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg px-4">Create Account</a>
-        </div>
       </div>
-      <div class="col-lg-6 position-relative">
-        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=900&q=80"
-             class="rounded-4 w-100 shadow-sm" style="height:420px;object-fit:cover;" alt="Student apartment building">
-        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500&q=80"
-             class="rounded-4 hero-badge d-none d-md-block"
-             style="width:200px;height:140px;object-fit:cover;top:-24px;left:-24px;" alt="Student room interior">
-        <div class="bg-white rounded-4 p-3 hero-badge d-flex flex-column align-items-start"
-             style="bottom:16px;right:16px;">
-          <span class="fw-bold fs-5 text-dark">₦180,000<span class="fs-6 text-secondary">/yr</span></span>
-          <span class="badge bg-warning text-dark mt-1">Featured</span>
-        </div>
+      <div class="col-lg-6">
+        <img src="/media/images/landport.jpeg"
+             class="hero-img" alt="Happy student smiling">
       </div>
     </div>
   </div>
 </section>
-
-<!-- ───────────────────────── SEARCH CARD ───────────────────────── -->
-<section class="reveal container">
-  <div class="search-card bg-white rounded-4 shadow p-3 p-md-4 p-lg-5">
-    <form action="{% url 'search' %}" method="get" class="row g-3 align-items-end">
-      <div class="col-12 col-md-4">
-        <label class="form-label small text-secondary mb-1">School</label>
-        <select name="school_name" class="form-select form-select-lg">
-          <option value="">Any School</option>
+<!-- ═══════════════════════ SEARCH BAR ═══════════════════════ -->
+<section class="container">
+  <div class="search-bar">
+    <form action="{% url 'search' %}" method="get" class="row g-2 g-md-3 align-items-end">
+      <div class="col-6 col-md-3">
+        <label class="form-label">University</label>
+        <select name="school_name" class="form-select">
+          <option value="">Select your university</option>
           {% for school in available_schools %}
           <option value="{{ school }}">{{ school }}</option>
+          {% empty %}
+          <option value="University of Lagos">University of Lagos</option>
+          <option value="University of Ibadan">University of Ibadan</option>
+          <option value="Covenant University">Covenant University</option>
+          <option value="University of Nigeria Nsukka">UNN</option>
+          <option value="Obafemi Awolowo University">OAU</option>
+          <option value="Ahmadu Bello University">ABU</option>
           {% endfor %}
         </select>
       </div>
-      <div class="col-12 col-md-4">
-        <label class="form-label small text-secondary mb-1">Location</label>
-        <input type="text" name="location" class="form-control form-control-lg" placeholder="e.g. Ota, Ogun">
-      </div>
-      <div class="col-6 col-md-2">
-        <label class="form-label small text-secondary mb-1">Rooms</label>
-        <select name="rooms" class="form-select form-select-lg">
-          <option value="" selected>Any</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3+</option>
+      <div class="col-6 col-md-3">
+        <label class="form-label">Location</label>
+        <select name="location" class="form-select">
+          <option value="">Select location</option>
+          <option value="Lagos">Lagos</option>
+          <option value="Ibadan">Ibadan</option>
+          <option value="Abuja">Abuja</option>
+          <option value="Nsukka">Nsukka</option>
+          <option value="Ile-Ife">Ile-Ife</option>
+          <option value="Zaria">Zaria</option>
+          <option value="Benin">Benin City</option>
         </select>
       </div>
       <div class="col-6 col-md-2">
-        <button type="submit" class="btn btn-primary btn-lg w-100">Search</button>
+        <label class="form-label">Budget</label>
+        <select name="budget" class="form-select">
+          <option value="">Any budget</option>
+          <option value="0-200000">Under ₦200k</option>
+          <option value="200000-400000">₦200k – ₦400k</option>
+          <option value="400000-600000">₦400k – ₦600k</option>
+          <option value="600000+">₦600k+</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label">Room type</label>
+        <select name="rooms" class="form-select">
+          <option value="">Any type</option>
+          <option value="1">1 Room</option>
+          <option value="2">2 Rooms</option>
+          <option value="3">3+ Rooms</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-2">
+        <button type="submit" class="btn btn-search w-100">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
+          Search
+        </button>
       </div>
     </form>
   </div>
 </section>
 
-<!-- ───────────────────────── STAT STRIP ───────────────────────── -->
-<section class="reveal py-4 py-md-5 mt-3 mt-md-4">
+<!-- ═══════════════════════ TRUST BADGES ═══════════════════════ -->
+<section class="trust-strip">
   <div class="container">
-    <div class="row text-center stat-strip g-3 g-md-4 reveal-stagger">
-      <div class="col-4">
-        <div class="stat-num text-primary"><span class="count-up" data-target="1200" data-suffix="+">0</span></div>
-        <div class="text-secondary">Listings Nationwide</div>
-      </div>
-      <div class="col-4">
-        <div class="stat-num text-primary"><span class="count-up" data-target="340" data-suffix="+">0</span></div>
-        <div class="text-secondary">Verified Agents</div>
-      </div>
-      <div class="col-4">
-        <div class="stat-num text-primary"><span class="count-up" data-target="96" data-suffix="%">0</span></div>
-        <div class="text-secondary">Student Satisfaction</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ───────────────────────── ABOUT ───────────────────────── -->
-<section class="reveal py-4 py-md-5 bg-light">
-  <div class="container py-3 py-md-4">
-    <div class="row align-items-center g-4 g-lg-5">
-      <div class="col-lg-6 order-lg-2">
-        <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-3">
-          Built for Students
-        </span>
-        <h2 class="fw-bold display-6 mb-3">Turning Room-Hunting Stress Into a Few Taps</h2>
-        <p class="text-secondary fs-5 mb-4">
-          Every listing on UNINEST is checked before it goes live. Landlord identity,
-          ownership documents, and agent NIN numbers are all verified — so what you
-          see is what you get when you show up.
-        </p>
-        <div class="row g-3 mb-4">
-          <div class="col-4">
-            <div class="fw-bold fs-3"><span class="count-up" data-target="1200" data-suffix="+">0</span></div>
-            <div class="text-secondary small">Listings</div>
-          </div>
-          <div class="col-4">
-            <div class="fw-bold fs-3"><span class="count-up" data-target="96" data-suffix="%">0</span></div>
-            <div class="text-secondary small">Match Rate</div>
-          </div>
-          <div class="col-4">
-            <div class="fw-bold fs-3">24/7</div>
-            <div class="text-secondary small">WhatsApp Support</div>
-          </div>
+    <div class="row g-2">
+      <div class="col-6 col-md-3">
+        <div class="trust-item">
+          <div class="trust-icon">🛡</div>
+          <h6>Verified Listings</h6>
+          <p>All properties checked for authenticity.</p>
         </div>
-        <ul class="list-unstyled mb-0">
-          <li class="mb-2">✓ Verified landlord &amp; agent identity checks</li>
-          <li class="mb-2">✓ Transparent pricing, no hidden agent fees</li>
-          <li class="mb-2">✓ Secure payments powered by Paystack</li>
-        </ul>
       </div>
-      <div class="col-lg-6 order-lg-1 position-relative">
-        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80"
-             class="rounded-4 w-100 shadow-sm" style="height:420px;object-fit:cover;" alt="Student housing exterior">
-        <div class="bg-primary text-white rounded-4 p-3 p-md-4 hero-badge text-center d-none d-sm-block"
-             style="bottom:-16px;right:-16px;">
-          <div class="fs-4 fw-bold">2026</div>
-          <div class="small">Since Launch</div>
+      <div class="col-6 col-md-3">
+        <div class="trust-item">
+          <div class="trust-icon">🏷</div>
+          <h6>Transparent prices</h6>
+          <p>No hidden fees. What you see is what you pay.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="trust-item">
+          <div class="trust-icon">🔒</div>
+          <h6>Secure payments</h6>
+          <p>Pay safely with Paystack.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="trust-item">
+          <div class="trust-icon">💬</div>
+          <h6>WhatsApp support</h6>
+          <p>Get quick help, anytime.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ───────────────────────── FEATURED LISTINGS ───────────────────────── -->
-<section class="reveal py-4 py-md-5">
+<!-- ═══════════════════════ POPULAR LISTINGS ═══════════════════════ -->
+<section class="py-4 py-md-5">
   <div class="container">
-    <div class="text-center mb-4 mb-md-5">
-      <h2 class="fw-bold display-6">Featured Listings</h2>
-      <p class="text-secondary mb-0">Fresh rooms and shared apartments near top Nigerian campuses</p>
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+      <div>
+        <h2 class="fw-bold mb-1" style="font-size:1.5rem;">Popular Near Your Campus</h2>
+        <p class="text-muted mb-0" style="font-size:.9rem;">Comfortable homes. Great locations. Trusted by students.</p>
+      </div>
+      <a href="{% url 'search' %}" class="fw-semibold text-decoration-none" style="color:var(--un-primary);">
+        View all listings →
+      </a>
     </div>
 
-    {% if featured_listings %}
-    <div class="row g-4 reveal-stagger">
-      {% for listing in featured_listings %}
-      <div class="col-md-6 col-lg-4">
-        <div class="card border-0 shadow-sm h-100 listing-card">
-          <div class="position-relative">
+    <div class="row g-3 g-md-4">
+      {% if featured_listings %}
+        {% for listing in featured_listings|slice:":4" %}
+        <div class="col-6 col-lg-3">
+          <div class="listing-card position-relative">
             {% if listing.primary_image %}
-            <img src="{{ listing.primary_image }}" class="card-img-top" alt="{{ listing.general_location }}">
+            <img src="{{ listing.primary_image }}" alt="{{ listing.title|default:listing.general_location }}">
             {% else %}
-            <div class="card-img-top d-flex align-items-center justify-content-center bg-secondary text-white" style="height:220px;">
-              <i class="bi bi-house-door display-4"></i>
-            </div>
+            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80" alt="Listing">
             {% endif %}
-            <span class="badge bg-primary position-absolute top-0 start-0 m-3">
-              <i class="bi bi-star-fill"></i> Featured
-            </span>
-            {% if listing.is_verified_agent %}
-            <span class="badge bg-white text-primary position-absolute top-0 end-0 m-3">
-              <i class="bi bi-patch-check-fill"></i> Verified
-            </span>
-            {% endif %}
-          </div>
-          <div class="card-body">
-            <h5 class="card-title fw-bold">{{ listing.title|default:listing.general_location }}</h5>
-            <p class="text-secondary small mb-2">{{ listing.general_location }}</p>
-            <p class="text-secondary small mb-3">
-              {{ listing.number_of_rooms }} Room{{ listing.number_of_rooms|pluralize }} · Max {{ listing.max_tenants }}
-            </p>
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="fw-bold fs-5">₦{{ listing.rent_amount|floatformat:0 }}/{{ listing.get_rent_basis_display|lower }}</span>
-              <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-outline-primary btn-sm">Details</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-    {% else %}
-    <div class="text-center text-secondary py-4">
-      <i class="bi bi-star fs-1 d-block mb-2"></i>
-      No featured listings yet — check back soon, or browse everything below.
-    </div>
-    {% endif %}
-
-    <div class="text-center mt-4 mt-md-5">
-      <a href="{% url 'search' %}" class="btn btn-primary btn-lg px-4">View All Listings</a>
-    </div>
-  </div>
-</section>
-
-<!-- ───────────────────────── POPULAR UNIVERSITIES ───────────────────────── -->
-<section class="reveal py-4 py-md-5 bg-light">
-  <div class="container">
-    <div class="text-center mb-4 mb-md-5">
-      <h2 class="fw-bold display-6">Browse by University</h2>
-      <p class="text-secondary mb-0">Find verified rooms near the campus that matters to you</p>
-    </div>
-    <div class="row g-3 g-md-4 reveal-stagger">
-
-      <div class="col-6 col-md-4 col-lg-2">
-        <a href="{% url 'search' %}?school_name=University+of+Lagos" class="text-decoration-none">
-          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
-            <img src="{% static 'images/University of lagos.jpeg' %}" class="card-img-top" alt="University of Lagos campus">
-            <div class="card-body text-center py-2 py-md-3">
-              <h6 class="fw-bold mb-0 text-dark">UNILAG</h6>
-              <p class="text-secondary small mb-0">Lagos</p>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-4 col-lg-2">
-        <a href="{% url 'search' %}?school_name=Covenant+University" class="text-decoration-none">
-          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
-            <img src="{% static 'images/covenant.jpg' %}" class="card-img-top" alt="Covenant University campus">
-            <div class="card-body text-center py-2 py-md-3">
-              <h6 class="fw-bold mb-0 text-dark">Covenant</h6>
-              <p class="text-secondary small mb-0">Ota, Ogun</p>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-4 col-lg-2">
-        <a href="{% url 'search' %}?school_name=University+of+Nigeria+Nsukka" class="text-decoration-none">
-          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
-            <img src="{% static 'images/Nsukka.jpg' %}" class="card-img-top" alt="University of Nigeria Nsukka campus">
-            <div class="card-body text-center py-2 py-md-3">
-              <h6 class="fw-bold mb-0 text-dark">UNN</h6>
-              <p class="text-secondary small mb-0">Nsukka</p>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-4 col-lg-2">
-        <a href="{% url 'search' %}?school_name=Obafemi+Awolowo+University" class="text-decoration-none">
-          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
-            <img src="{% static 'images/OAU.webp' %}" class="card-img-top" alt="Obafemi Awolowo University campus">
-            <div class="card-body text-center py-2 py-md-3">
-              <h6 class="fw-bold mb-0 text-dark">OAU</h6>
-              <p class="text-secondary small mb-0">Ile-Ife</p>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-4 col-lg-2">
-        <a href="{% url 'search' %}?school_name=University+of+Ibadan" class="text-decoration-none">
-          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
-            <img src="{% static 'images/UI.jpg' %}" class="card-img-top" alt="University of Ibadan campus">
-            <div class="card-body text-center py-2 py-md-3">
-              <h6 class="fw-bold mb-0 text-dark">UI</h6>
-              <p class="text-secondary small mb-0">Ibadan</p>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-4 col-lg-2">
-        <a href="{% url 'search' %}?school_name=Ahmadu+Bello+University" class="text-decoration-none">
-          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
-            <img src="{% static 'images/AHMADU.jpg' %}" class="card-img-top" alt="Ahmadu Bello University campus">
-            <div class="card-body text-center py-2 py-md-3">
-              <h6 class="fw-bold mb-0 text-dark">ABU</h6>
-              <p class="text-secondary small mb-0">Zaria</p>
-            </div>
-          </div>
-        </a>
-      </div>
-
-    </div>
-    <p class="text-center text-secondary small mt-4 mb-0">
-      Don’t see your school? <a href="{% url 'search' %}">Search all listings</a> — new campuses are added every week.
-    </p>
-  </div>
-</section>
-
-<!-- ───────────────────────── SERVICES ───────────────────────── -->
-<section class="reveal py-4 py-md-5">
-  <div class="container">
-    <div class="text-center mb-4 mb-md-5">
-      <h2 class="fw-bold display-6">Why Students Use UNINEST</h2>
-      <p class="text-secondary mb-0">The four things that make room-hunting less painful</p>
-    </div>
-    <div class="row g-3 g-md-4 reveal-stagger">
-      <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 p-3 p-md-4 service-card text-center text-md-start">
-          <div class="fs-1 mb-2 mb-md-3"></div>
-          <h5 class="fw-bold">Verified Listings</h5>
-          <p class="text-secondary small mb-0">Every landlord and agent is checked before their listing goes live.</p>
-        </div>
-      </div>
-      <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 p-3 p-md-4 service-card text-center text-md-start">
-          <div class="fs-1 mb-2 mb-md-3"></div>
-          <h5 class="fw-bold">School Matching</h5>
-          <p class="text-secondary small mb-0">Search by campus name and see only rooms within reach of your school.</p>
-        </div>
-      </div>
-      <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 p-3 p-md-4 service-card text-center text-md-start">
-          <div class="fs-1 mb-2 mb-md-3"></div>
-          <h5 class="fw-bold">Secure Payments</h5>
-          <p class="text-secondary small mb-0">Unlock full contact details safely through Paystack — no cash sent blind.</p>
-        </div>
-      </div>
-      <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 p-3 p-md-4 service-card text-center text-md-start">
-          <div class="fs-1 mb-2 mb-md-3"></div>
-          <h5 class="fw-bold">Real Support</h5>
-          <p class="text-secondary small mb-0">Message us on WhatsApp any time you’re unsure about a listing.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ───────────────────────── FEATURED AGENTS ───────────────────────── -->
-<section class="reveal py-4 py-md-5 bg-light">
-  <div class="container">
-    <div class="text-center mb-4 mb-md-5">
-      <h2 class="fw-bold display-6">Top Student Agents</h2>
-      <p class="text-secondary mb-0">Verified agents currently listing the most rooms on UNINEST</p>
-    </div>
-
-    {% if top_agents %}
-    <div class="row g-4 reveal-stagger">
-      {% for agent in top_agents %}
-      <div class="col-sm-6 col-lg-4">
-        <div class="card border-0 shadow-sm h-100 agent-card">
-          {% if agent.profile_photo %}
-          <img src="{{ agent.profile_photo.url }}" class="card-img-top" alt="{{ agent.get_full_name|default:agent.username }}">
-          {% else %}
-          <div class="agent-img-placeholder d-flex align-items-center justify-content-center bg-secondary text-white">
-            <i class="bi bi-person-circle display-1"></i>
-          </div>
-          {% endif %}
-          <div class="card-body text-center">
-            <h5 class="fw-bold mb-0">{{ agent.get_full_name|default:agent.username }}</h5>
-            <p class="text-primary small mb-3">
-              {{ agent.get_role_display|upper }}
-              <i class="bi bi-patch-check-fill" title="Verified"></i>
-            </p>
-            <div class="d-flex justify-content-around border-top border-bottom py-2 mb-3">
-              <div>
-                <div class="fw-bold">
-                  <span class="count-up" data-target="{{ agent.listing_count }}" data-suffix="+">0</span>
-                </div>
-                <div class="text-secondary small">Rooms Listed</div>
+            <span class="badge-verified">Verified</span>
+            <div class="heart">♡</div>
+            <div class="card-body">
+              <h5>{{ listing.title|default:listing.general_location|truncatechars:28 }}</h5>
+              <div class="loc"> {{ listing.general_location|default:"Near campus" }}</div>
+              <div class="price mb-1">
+                ₦{{ listing.rent_amount|floatformat:0 }}
+                <small class="text-muted fw-normal">/{{ listing.get_rent_basis_display|default:"year"|lower }}</small>
               </div>
+              <div class="meta mb-3">
+                 {{ listing.number_of_rooms|default:"1" }} Room{{ listing.number_of_rooms|pluralize }}
+                {% if listing.distance_to_campus %} ·  {{ listing.distance_to_campus }}{% endif %}
+              </div>
+              <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-details w-100">View Details →</a>
             </div>
-            <a href="{% url 'search' %}" class="btn btn-primary w-100">View Listings</a>
           </div>
         </div>
-      </div>
-      {% endfor %}
+        {% endfor %}
+      {% else %}
+        <!-- Fallback static cards -->
+        <div class="col-6 col-lg-3">
+          <div class="listing-card position-relative">
+            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80" alt="The Greenview Residence">
+            <span class="badge-verified">Verified</span>
+            <div class="heart">♡</div>
+            <div class="card-body">
+              <h5>The Greenview Residence</h5>
+              <div class="loc"> University of Ibadan, Ibadan</div>
+              <div class="price mb-1">₦350,000 <small class="text-muted fw-normal">/year</small></div>
+              <div class="meta mb-3">🛏 1 Room ·  5 mins from campus</div>
+              <a href="{% url 'search' %}" class="btn btn-details w-100">View Details →</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="listing-card position-relative">
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80" alt="Campus Nest">
+            <span class="badge-verified">Verified</span>
+            <div class="heart">♡</div>
+            <div class="card-body">
+              <h5>Campus Nest Apartments</h5>
+              <div class="loc"> UNILAG, Lagos</div>
+              <div class="price mb-1">₦480,000 <small class="text-muted fw-normal">/year</small></div>
+              <div class="meta mb-3"> 2 Rooms ·  3 mins from campus</div>
+              <a href="{% url 'search' %}" class="btn btn-details w-100">View Details →</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="listing-card position-relative">
+            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80" alt="Scholar's Haven">
+            <span class="badge-verified">Verified</span>
+            <div class="heart">♡</div>
+            <div class="card-body">
+              <h5>The Scholar's Haven</h5>
+              <div class="loc"> University of Benin, Benin City</div>
+              <div class="price mb-1">₦400,000 <small class="text-muted fw-normal">/year</small></div>
+              <div class="meta mb-3"> 1 Room ·  7 mins from campus</div>
+              <a href="{% url 'search' %}" class="btn btn-details w-100">View Details →</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="listing-card position-relative">
+            <img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&q=80" alt="Abuja Student Lodge">
+            <span class="badge-verified">Verified</span>
+            <div class="heart">♡</div>
+            <div class="card-body">
+              <h5>Abuja Student Lodge</h5>
+              <div class="loc"> Bingham University, Karu</div>
+              <div class="price mb-1">₦450,000 <small class="text-muted fw-normal">/year</small></div>
+              <div class="meta mb-3">🛏 2 Rooms ·  4 mins from campus</div>
+              <a href="{% url 'search' %}" class="btn btn-details w-100">View Details →</a>
+            </div>
+          </div>
+        </div>
+      {% endif %}
     </div>
-    {% else %}
-    <div class="text-center text-secondary py-4">
-      <i class="bi bi-people fs-1 d-block mb-2"></i>
-      No verified agents with live listings yet — check back soon.
-    </div>
-    {% endif %}
   </div>
 </section>
 
-<!-- ───────────────────────── TESTIMONIALS ───────────────────────── -->
-<section class="reveal py-4 py-md-5" style="background:#eaf6f5;">
-  <div class="container py-3 py-md-4">
+<!-- ═══════════════════════ HOW IT WORKS ═══════════════════════ -->
+<section class="py-4 py-md-5 bg-light" id="how-it-works">
+  <div class="container">
     <div class="text-center mb-4 mb-md-5">
-      <h2 class="fw-bold display-6">What Students Say</h2>
-      <p class="text-secondary mb-0">Real feedback from students who found housing through UNINEST</p>
+      <h2 class="fw-bold" style="font-size:1.5rem;">How UNINEST Works</h2>
+      <p class="text-muted mb-0">Finding your next room is simple, safe and stress-free.</p>
     </div>
-    <div class="row align-items-center g-4 g-lg-5">
-      <div class="col-lg-7">
-        <h4 class="fw-bold mb-3">“I found my room in two days, not two weeks”</h4>
-        <p class="text-secondary fs-5">
-          I was dreading resumption because I still hadn’t found a room near campus.
-          A friend sent me a UNINEST listing, I unlocked the landlord’s number,
-          and I moved in that same week. No agent wahala, no fake photos.
-        </p>
-        <p class="fw-semibold mb-0">— Blessing A., 200L Student</p>
-      </div>
-      <div class="col-lg-5">
-        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80"
-             class="rounded-4 w-100 shadow-sm" style="height:320px;object-fit:cover;" alt="Happy student">
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ───────────────────────── WHY US / VIDEO ───────────────────────── -->
-<section class="reveal py-4 py-md-5">
-  <div class="container py-3 py-md-4">
-    <div class="row align-items-center g-4 g-lg-5">
-      <div class="col-lg-6 position-relative">
-        <img src="https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&q=80"
-             class="rounded-4 w-100 shadow-sm" style="height:380px;object-fit:cover;" alt="Campus housing">
-        <button class="play-btn bg-white border-0 position-absolute top-50 start-50 translate-middle shadow" aria-label="Play video">
-          ▶
-        </button>
-      </div>
-      <div class="col-lg-6">
-        <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-3">
-          Why UNINEST
-        </span>
-        <h2 class="fw-bold display-6 mb-3">Your Shortcut to a Verified Room</h2>
-        <p class="text-secondary fs-5 mb-4">
-          We built UNINEST because too many students were sending deposits for rooms
-          that didn’t exist. Every listing you see has been checked — the address,
-          the landlord, the photos.
-        </p>
-        <div class="row g-3 g-md-4">
-          <div class="col-6">
-            <div class="fs-3"></div>
-            <h6 class="fw-bold">Near Campus</h6>
-            <p class="text-secondary small mb-0">Filter listings by distance to your school.</p>
-          </div>
-          <div class="col-6">
-            <div class="fs-3"></div>
-            <h6 class="fw-bold">Verified Landlords</h6>
-            <p class="text-secondary small mb-0">ID and ownership docs checked before listing.</p>
-          </div>
-          <div class="col-6">
-            <div class="fs-3"></div>
-            <h6 class="fw-bold">Fast Matching</h6>
-            <p class="text-secondary small mb-0">Unlock contact details in seconds, not days.</p>
-          </div>
-          <div class="col-6">
-            <div class="fs-3"></div>
-            <h6 class="fw-bold">Student Support</h6>
-            <p class="text-secondary small mb-0">Real humans on WhatsApp if something’s off.</p>
-          </div>
+    <div class="row g-4 text-center">
+      <div class="col-6 col-md-3">
+        <div class="how-step">
+          <div class="how-icon"></div>
+          <h6>1. Search</h6>
+          <p>Find the perfect room near your campus.</p>
         </div>
       </div>
-    </div>
-
-    <div class="row text-center bg-light rounded-4 p-3 p-md-4 mt-4 mt-md-5 g-3 g-md-4 reveal-stagger">
-      <div class="col-4">
-        <div class="fw-bold fs-2 text-primary"><span class="count-up" data-target="96">0</span></div>
-        <div class="text-secondary small">% Match Rate</div>
-      </div>
-      <div class="col-4">
-        <div class="fw-bold fs-2 text-primary"><span class="count-up" data-target="1200">0</span></div>
-        <div class="text-secondary small">+ Listings</div>
-      </div>
-      <div class="col-4">
-        <div class="fw-bold fs-2 text-primary"><span class="count-up" data-target="24">0</span></div>
-        <div class="text-secondary small">/7 Support</div>
-      </div>
-    </div>
-
-    <div class="text-center mt-4 d-flex justify-content-center gap-2 gap-md-3 flex-wrap">
-      <a href="{% url 'search' %}" class="btn btn-primary btn-lg px-4">Explore Listings</a>
-      <a href="https://wa.me/254115640806" class="btn btn-outline-primary btn-lg px-4">Chat With Us</a>
-    </div>
-  </div>
-</section>
-
-<!-- ───────────────────────── FINAL CTA ───────────────────────── -->
-<section class="reveal py-4 py-md-5 cta-band text-white">
-  <div class="container py-3 py-md-4">
-    <div class="row align-items-center g-4 g-lg-5">
-      <div class="col-lg-6">
-        <h2 class="display-5 fw-bold mb-3">Ready to Find Your Perfect Room?</h2>
-        <p class="fs-5 opacity-75 mb-4">
-          Browse verified listings near your campus, unlock contact details securely,
-          and move in without the usual room-hunting stress.
-        </p>
-        <ul class="list-unstyled mb-4">
-          <li class="mb-2">✓ Verified landlords and agents</li>
-          <li class="mb-2">✓ Transparent pricing, no surprise fees</li>
-          <li class="mb-2">✓ Secure unlock via Paystack</li>
-        </ul>
-        <div class="d-flex gap-2 gap-md-3 flex-wrap">
-          <a href="{% url 'register' %}" class="btn btn-light btn-lg text-primary fw-semibold px-4">Create Free Account</a>
-          <a href="https://wa.me/254115640806" class="btn btn-outline-light btn-lg px-4">Talk to Us</a>
+      <div class="col-6 col-md-3">
+        <div class="how-step">
+          <div class="how-icon"></div>
+          <h6>2. Verify</h6>
+          <p>We check listings and landlords for your safety.</p>
         </div>
       </div>
-      <div class="col-lg-6 position-relative">
-        <img src="https://images.unsplash.com/photo-1560184897-ae75f418493e?w=800&q=80"
-             class="rounded-4 w-100 shadow" style="height:340px;object-fit:cover;" alt="Student moving in">
-        <div class="bg-white text-dark rounded-4 p-3 hero-badge d-none d-sm-block" style="bottom:-16px;left:16px;">
-          <div class="fw-bold fs-4"><span class="count-up" data-target="1200" data-suffix="+">0</span></div>
-          <div class="small text-secondary">Rooms Booked</div>
+      <div class="col-6 col-md-3">
+        <div class="how-step">
+          <div class="how-icon"></div>
+          <h6>3. Pay</h6>
+          <p>Make payment securely with Paystack.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="how-step">
+          <div class="how-icon"></div>
+          <h6>4. Move In</h6>
+          <p>Get your keys and settle in.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<script>
-  (function () {
-    var targets = document.querySelectorAll(".reveal, .reveal-stagger");
-    if (!("IntersectionObserver" in window) || !targets.length) {
-      targets.forEach(function (el) { el.classList.add("is-visible"); });
-      return;
-    }
+<!-- ═══════════════════════ TESTIMONIALS ═══════════════════════ -->
+<section class="py-4 py-md-5">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+      <div>
+        <h2 class="fw-bold mb-1" style="font-size:1.5rem;">What Students Are Saying</h2>
+        <p class="text-muted mb-0" style="font-size:.9rem;">Real stories from real students, just like you.</p>
+      </div>
+      <a href="#" class="fw-semibold text-decoration-none" style="color:var(--un-primary);">
+        View more testimonials →
+      </a>
+    </div>
+    <div class="row g-3 g-md-4">
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <img src="/media/images/pic1.jpg" alt="Blessing">
+            <div>
+              <div class="fw-bold">Blessing A.</div>
+              <div class="small text-muted">UNILAG</div>
+            </div>
+          </div>
+          <p class="mb-2" style="font-size:.9rem;">“UNINEST made my hostel search so easy. The listing was exactly as described, and the landlord was really responsive.”</p>
+          <div class="stars">★★★★★</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <img src="/media/images/pic2.jpg" alt="Chinedu">
+            <div>
+              <div class="fw-bold">Chinedu E.</div>
+              <div class="small text-muted">UNIBEN</div>
+            </div>
+          </div>
+          <p class="mb-2" style="font-size:.9rem;">“I love how secure the payment process is. No stress, no wahala. I got a nice room close to campus!”</p>
+          <div class="stars">★★★★★</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <img src="/media/images/pic3.jpg" alt="Adeola">
+            <div>
+              <div class="fw-bold">Adeola T.</div>
+              <div class="small text-muted">UI</div>
+            </div>
+          </div>
+          <p class="mb-2" style="font-size:.9rem;">“Finally, a platform that actually cares about students. Clean rooms, friendly support and legit listings!”</p>
+          <div class="stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+<!-- ═══════════════════════ BROWSE BY UNIVERSITY ═══════════════════════ -->
+<section class="py-3 py-md-4">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center gap-2 gap-md-3">
+      <span class="fw-bold">Browse by University</span>
+      <span class="text-muted small d-none d-sm-inline">Find rooms at your school</span>
+      <div class="d-flex flex-wrap gap-2 ms-md-auto">
+        <a href="{% url 'search' %}?school_name=University+of+Lagos" class="uni-pill">UNILAG</a>
+        <a href="{% url 'search' %}?school_name=University+of+Ibadan" class="uni-pill">UI</a>
+        <a href="{% url 'search' %}?school_name=University+of+Nigeria+Nsukka" class="uni-pill">UNN</a>
+        <a href="{% url 'search' %}?school_name=Obafemi+Awolowo+University" class="uni-pill">OAU</a>
+        <a href="{% url 'search' %}?school_name=Covenant+University" class="uni-pill">Covenant</a>
+        <a href="{% url 'search' %}?school_name=Ahmadu+Bello+University" class="uni-pill">ABU</a>
+        <a href="{% url 'search' %}" class="uni-pill" style="color:var(--un-primary);">View All →</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    targets.forEach(function (el) { observer.observe(el); });
-  })();
-
-  (function () {
-    var counters = document.querySelectorAll(".count-up");
-    if (!counters.length) return;
-
-    var reduceMotion = window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    function renderFinal(el, target, decimals, prefix, suffix) {
-      var text = decimals > 0 ? target.toFixed(decimals) : Math.round(target).toLocaleString();
-      el.textContent = prefix + text + suffix;
-    }
-
-    function animateCount(el) {
-      var target = parseFloat(el.dataset.target);
-      var decimals = parseInt(el.dataset.decimals || "0", 10);
-      var prefix = el.dataset.prefix || "";
-      var suffix = el.dataset.suffix || "";
-      var duration = parseInt(el.dataset.duration || "1400", 10);
-
-      if (reduceMotion || isNaN(target)) {
-        renderFinal(el, target, decimals, prefix, suffix);
-        return;
-      }
-
-      var start = null;
-      function frame(timestamp) {
-        if (start === null) start = timestamp;
-        var progress = Math.min((timestamp - start) / duration, 1);
-        var eased = 1 - Math.pow(1 - progress, 3);
-        var current = target * eased;
-        var text = decimals > 0 ? current.toFixed(decimals) : Math.floor(current).toLocaleString();
-        el.textContent = prefix + text + suffix;
-        if (progress < 1) {
-          requestAnimationFrame(frame);
-        } else {
-          renderFinal(el, target, decimals, prefix, suffix);
-        }
-      }
-      requestAnimationFrame(frame);
-    }
-
-    if (!("IntersectionObserver" in window)) {
-      counters.forEach(animateCount);
-      return;
-    }
-
-    var countObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          animateCount(entry.target);
-          countObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.4 });
-
-    counters.forEach(function (el) { countObserver.observe(el); });
-  })();
-</script>
+<!-- ═══════════════════════ FINAL CTA ═══════════════════════ -->
+<section class="py-4 py-md-5">
+  <div class="container">
+    <div class="cta-band">
+      <div class="row align-items-center g-3">
+        <div class="col-md-8 text-center text-md-start">
+          <h2 class="mb-2">Stop chasing fake listings.<br>Start with verified homes.</h2>
+          <p class="mb-0 opacity-75">Find your next room near your campus today.</p>
+        </div>
+        <div class="col-md-4 text-center text-md-end">
+          <a href="{% url 'search' %}" class="btn btn-cta-light">Browse Listings →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 {% endblock %}
