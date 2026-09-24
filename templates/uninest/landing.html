@@ -328,6 +328,124 @@
     .search-bar .row > [class*="col-"] { margin-bottom: .35rem; }
     .listing-card img { height: 150px; }
   }
+  /* University cards */
+.uni-card {
+  transition: transform .2s ease, box-shadow .2s ease;
+  border-radius: 0.75rem;
+}
+.uni-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.1);
+}
+.uni-card img {
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+/* Cooler Trust Cards */
+.trust-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.4rem 1rem;
+  text-align: center;
+  transition: all 0.25s ease;
+  height: 100%;
+}
+[data-bs-theme="dark"] .trust-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+.trust-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(13,148,136,.12);
+  border-color: rgba(13,148,136,.3);
+}
+.trust-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--un-soft);
+  color: var(--un-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+}
+[data-bs-theme="dark"] .trust-icon-wrap {
+  background: rgba(13,148,136,.18);
+  color: #5eead4;
+}
+.whatsapp-icon {
+  background: #25D366 !important;
+  color: #fff !important;
+}
+.trust-card h6 {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+  color: #0f172a;
+}
+[data-bs-theme="dark"] .trust-card h6 {
+  color: #f1f5f9;
+}
+.trust-card p {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+[data-bs-theme="dark"] .trust-card p {
+  color: #94a3b8;
+}
+.whatsapp-card:hover {
+  border-color: #25D366 !important;
+  box-shadow: 0 12px 28px rgba(37,211,102,.18) !important;
+}
+/* Professional How It Works */
+.how-step {
+  position: relative;
+  padding: 0.5rem;
+}
+.how-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--un-soft);
+  color: var(--un-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 4px 12px rgba(13,148,136,.08);
+  transition: all 0.25s ease;
+}
+[data-bs-theme="dark"] .how-icon-wrap {
+  background: #1e293b;
+  border-color: rgba(13,148,136,.3);
+  color: #5eead4;
+}
+.how-step:hover .how-icon-wrap {
+  background: var(--un-primary);
+  color: #fff;
+  border-color: var(--un-primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(13,148,136,.2);
+}
+.how-number {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--un-primary);
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+}
+.how-step h6 {
+  font-size: 1rem;
+  color: #0f172a;
+}
+[data-bs-theme="dark"] .how-step h6 {
+  color: #f1f5f9;
+}
 </style>
 {% endblock %}
 
@@ -419,39 +537,66 @@
     </form>
   </div>
 </section>
-
 <!-- ═══════════════════════ TRUST BADGES ═══════════════════════ -->
-<section class="trust-strip">
+<section class="trust-strip py-4 py-md-5">
   <div class="container">
-    <div class="row g-3 g-md-4">
+    <div class="row g-3 g-md-4 justify-content-center">
+
+      <!-- Verified Listings -->
       <div class="col-6 col-md-3">
-        <div class="trust-item">
-          <div class="trust-icon">🛡</div>
+        <div class="trust-card h-100">
+          <div class="trust-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+              <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+            </svg>
+          </div>
           <h6>Verified Listings</h6>
           <p>All properties checked for authenticity.</p>
         </div>
       </div>
+
+      <!-- Transparent Prices -->
       <div class="col-6 col-md-3">
-        <div class="trust-item">
-          <div class="trust-icon">🏷</div>
+        <div class="trust-card h-100">
+          <div class="trust-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M4 4.785a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m9 0a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 9.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m9 0a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 14.215a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m9 0a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M1.705 8.005a.5.5 0 0 1 .5-.5h11.59a.5.5 0 0 1 0 1H2.205a.5.5 0 0 1-.5-.5M1.705 3.5a.5.5 0 0 1 .5-.5h11.59a.5.5 0 0 1 0 1H2.205a.5.5 0 0 1-.5-.5m0 9a.5.5 0 0 1 .5-.5h11.59a.5.5 0 0 1 0 1H2.205a.5.5 0 0 1-.5-.5"/>
+            </svg>
+          </div>
           <h6>Transparent prices</h6>
           <p>No hidden fees. What you see is what you pay.</p>
         </div>
       </div>
+
+      <!-- Secure Payments -->
       <div class="col-6 col-md-3">
-        <div class="trust-item">
-          <div class="trust-icon">🔒</div>
+        <div class="trust-card h-100">
+          <div class="trust-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+            </svg>
+          </div>
           <h6>Secure payments</h6>
           <p>Pay safely with Paystack.</p>
         </div>
       </div>
+
+      <!-- WhatsApp Support (clickable) -->
       <div class="col-6 col-md-3">
-        <div class="trust-item">
-          <div class="trust-icon">💬</div>
-          <h6>WhatsApp support</h6>
-          <p>Get quick help, anytime.</p>
-        </div>
+        <a href="https://wa.me/2349160431028" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+          <div class="trust-card h-100 whatsapp-card">
+            <div class="trust-icon-wrap whatsapp-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.78-.114.133-.229.148-.426.05-.197-.099-.836-.308-1.592-.985-.59-.525-.985-1.176-1.1-1.373-.114-.198-.011-.304.088-.403.087-.088.197-.229.296-.346.1-.117.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.941.164-.464.164-.86.114-.941-.049-.084-.182-.133-.38-.232"/>
+              </svg>
+            </div>
+            <h6>WhatsApp support</h6>
+            <p>Get quick help, anytime.</p>
+          </div>
+        </a>
       </div>
+
     </div>
   </div>
 </section>
@@ -560,45 +705,74 @@
 </section>
 
 <!-- ═══════════════════════ HOW IT WORKS ═══════════════════════ -->
-<section class="py-4 py-md-5 bg-light" id="how-it-works">
+<section class="py-5 bg-light" id="how-it-works">
   <div class="container">
-    <div class="text-center mb-4 mb-md-5">
-      <h2 class="fw-bold" style="font-size:1.5rem;">How UNINEST Works</h2>
+    <div class="text-center mb-5">
+      <h2 class="fw-bold mb-2" style="font-size:1.6rem;">How UNINEST Works</h2>
       <p class="text-muted mb-0">Finding your next room is simple, safe and stress-free.</p>
     </div>
-    <div class="row g-4 text-center">
+
+    <div class="row g-4 g-lg-5 justify-content-center">
+      <!-- Step 1 -->
       <div class="col-6 col-md-3">
-        <div class="how-step">
-          <div class="how-icon"></div>
-          <h6>1. Search</h6>
-          <p>Find the perfect room near your campus.</p>
+        <div class="how-step text-center">
+          <div class="how-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+            </svg>
+          </div>
+          <div class="how-number"></div>
+          <h6 class="fw-bold mt-2 mb-2">Search</h6>
+          <p class="text-muted small mb-0">Find the perfect room near your campus.</p>
         </div>
       </div>
+
+      <!-- Step 2 -->
       <div class="col-6 col-md-3">
-        <div class="how-step">
-          <div class="how-icon"></div>
-          <h6>2. Verify</h6>
-          <p>We check listings and landlords for your safety.</p>
+        <div class="how-step text-center">
+          <div class="how-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+              <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+            </svg>
+          </div>
+          <div class="how-number"></div>
+          <h6 class="fw-bold mt-2 mb-2">Verify</h6>
+          <p class="text-muted small mb-0">We check listings and landlords for your safety.</p>
         </div>
       </div>
+
+      <!-- Step 3 -->
       <div class="col-6 col-md-3">
-        <div class="how-step">
-          <div class="how-icon"></div>
-          <h6>3. Pay</h6>
-          <p>Make payment securely with Paystack.</p>
+        <div class="how-step text-center">
+          <div class="how-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/>
+              <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+            </svg>
+          </div>
+          <div class="how-number"></div>
+          <h6 class="fw-bold mt-2 mb-2">Pay</h6>
+          <p class="text-muted small mb-0">Make payment securely with Paystack.</p>
         </div>
       </div>
+
+      <!-- Step 4 -->
       <div class="col-6 col-md-3">
-        <div class="how-step">
-          <div class="how-icon"></div>
-          <h6>4. Move In</h6>
-          <p>Get your keys and settle in.</p>
+        <div class="how-step text-center">
+          <div class="how-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4z"/>
+            </svg>
+          </div>
+          <div class="how-number"></div>
+          <h6 class="fw-bold mt-2 mb-2">Move In</h6>
+          <p class="text-muted small mb-0">Get your keys and settle in.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
-
 <!-- ═══════════════════════ TESTIMONIALS ═══════════════════════ -->
 <section class="py-4 py-md-5">
   <div class="container">
@@ -656,24 +830,92 @@
 </section>
 
 <!-- ═══════════════════════ BROWSE BY UNIVERSITY ═══════════════════════ -->
-<section class="py-3 py-md-4">
+<section class="py-4 py-md-5 bg-light">
   <div class="container">
-    <div class="d-flex flex-wrap align-items-center gap-2 gap-md-3">
-      <span class="fw-bold">Browse by University</span>
-      <span class="text-muted small d-none d-sm-inline">Find rooms at your school</span>
-      <div class="d-flex flex-wrap gap-2 ms-md-auto">
-        <a href="{% url 'search' %}?school_name=University+of+Lagos" class="uni-pill">UNILAG</a>
-        <a href="{% url 'search' %}?school_name=University+of+Ibadan" class="uni-pill">UI</a>
-        <a href="{% url 'search' %}?school_name=University+of+Nigeria+Nsukka" class="uni-pill">UNN</a>
-        <a href="{% url 'search' %}?school_name=Obafemi+Awolowo+University" class="uni-pill">OAU</a>
-        <a href="{% url 'search' %}?school_name=Covenant+University" class="uni-pill">Covenant</a>
-        <a href="{% url 'search' %}?school_name=Ahmadu+Bello+University" class="uni-pill">ABU</a>
-        <a href="{% url 'search' %}" class="uni-pill" style="color:var(--un-primary);">View All →</a>
+    <div class="text-center mb-4 mb-md-5">
+      <h2 class="fw-bold" style="font-size:1.5rem;">Browse by University</h2>
+      <p class="text-muted mb-0">Find verified rooms near the campus that matters to you</p>
+    </div>
+
+    <div class="row g-3 g-md-4">
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'search' %}?school_name=University+of+Lagos" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
+            <img src="{% static 'images/University of lagos.jpeg' %}" class="card-img-top" alt="University of Lagos campus" style="height:130px;object-fit:cover;">
+            <div class="card-body text-center py-2 py-md-3">
+              <h6 class="fw-bold mb-0 text-dark">UNILAG</h6>
+              <p class="text-secondary small mb-0">Lagos</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'search' %}?school_name=Covenant+University" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
+            <img src="{% static 'images/covenant.jpg' %}" class="card-img-top" alt="Covenant University campus" style="height:130px;object-fit:cover;">
+            <div class="card-body text-center py-2 py-md-3">
+              <h6 class="fw-bold mb-0 text-dark">Covenant</h6>
+              <p class="text-secondary small mb-0">Ota, Ogun</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'search' %}?school_name=University+of+Nigeria+Nsukka" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
+            <img src="{% static 'images/Nsukka.jpg' %}" class="card-img-top" alt="University of Nigeria Nsukka campus" style="height:130px;object-fit:cover;">
+            <div class="card-body text-center py-2 py-md-3">
+              <h6 class="fw-bold mb-0 text-dark">UNN</h6>
+              <p class="text-secondary small mb-0">Nsukka</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'search' %}?school_name=Obafemi+Awolowo+University" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
+            <img src="{% static 'images/OAU.webp' %}" class="card-img-top" alt="Obafemi Awolowo University campus" style="height:130px;object-fit:cover;">
+            <div class="card-body text-center py-2 py-md-3">
+              <h6 class="fw-bold mb-0 text-dark">OAU</h6>
+              <p class="text-secondary small mb-0">Ile-Ife</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'search' %}?school_name=University+of+Ibadan" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
+            <img src="{% static 'images/UI.jpg' %}" class="card-img-top" alt="University of Ibadan campus" style="height:130px;object-fit:cover;">
+            <div class="card-body text-center py-2 py-md-3">
+              <h6 class="fw-bold mb-0 text-dark">UI</h6>
+              <p class="text-secondary small mb-0">Ibadan</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'search' %}?school_name=Ahmadu+Bello+University" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden uni-card">
+            <img src="{% static 'images/AHMADU.jpg' %}" class="card-img-top" alt="Ahmadu Bello University campus" style="height:130px;object-fit:cover;">
+            <div class="card-body text-center py-2 py-md-3">
+              <h6 class="fw-bold mb-0 text-dark">ABU</h6>
+              <p class="text-secondary small mb-0">Zaria</p>
+            </div>
+          </div>
+        </a>
       </div>
     </div>
+
+    <p class="text-center text-secondary small mt-4 mb-0">
+      Don’t see your school? <a href="{% url 'search' %}" style="color:var(--un-primary);">Search all listings</a> — new campuses are added every week.
+    </p>
   </div>
 </section>
-
 <!-- ═══════════════════════ FINAL CTA ═══════════════════════ -->
 <section class="py-4 py-md-5">
   <div class="container">
