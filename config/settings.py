@@ -102,8 +102,8 @@ CSRF_TRUSTED_ORIGINS = [
  
 import os
  
-PAYSTACK_PUBLIC_KEY = os.environ.get("PAYSTACK_PUBLIC_KEY", "pk_live_db7a03968f99f13e7858c391707ecf62345dfbb2")
-PAYSTACK_SECRET_KEY = os.environ.get("PAYSTACK_SECRET_KEY", "sk_live_add411a023a47fe8f74f835f92a74d717fec2564")
+PAYSTACK_PUBLIC_KEY = os.environ.get("PAYSTACK_PUBLIC_KEY", "pk_live_fd8b44cee0cdbe430047ce7582eba658bc59796e")
+PAYSTACK_SECRET_KEY = os.environ.get("PAYSTACK_SECRET_KEY", "sk_live_76359e1fd80d60d83dd6577260771412662b870e")
  
 # Amount charged for the monthly unlock, in Naira (converted to kobo where needed)
 UNINEST_SUBSCRIPTION_AMOUNT = 1000
